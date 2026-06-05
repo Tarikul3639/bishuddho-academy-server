@@ -2,12 +2,28 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
 import { Course, CourseSchema } from '../../database/schemas/course.schema';
-import { CreateCourseService } from './service/courses-create.service';
-import { CoursesController } from './courses.controller';
+import {
+    Enrollment,
+    EnrollmentSchema,
+} from '../../database/schemas/enrollment.schema';
+
+import { AdminFindAllCoursesService } from './service/admin-find-all-courses.service';
+import { AdminCreateCourseService } from './service/admin-courses-create.service';
+import { AdminFindCourseDetailsService } from './service/admin-find-courses-details.service';
+import { AdminUpdateCourseService } from './service/admin-update-course.service';
+
+// import { PublicFindCourseDetailsService } from "./service/public-find-course-details.service";
+import { PublicFindCoursesService } from "./service/public-find-courses.service";
+
+import { AdminCoursesController } from './controller/admin-courses.controller';
+import { PublicCoursesController } from './controller/public-courses.controller';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{ name: Course.name, schema: CourseSchema }]),
+        MongooseModule.forFeature([
+            { name: Course.name, schema: CourseSchema },
+            { name: Enrollment.name, schema: EnrollmentSchema },
+        ]),
         MulterModule.register({
             fileFilter: (req, file, cb) => {
                 if (!file.mimetype.startsWith('image/')) {
@@ -18,7 +34,15 @@ import { CoursesController } from './courses.controller';
             limits: { fileSize: 5 * 1024 * 1024 },
         }),
     ],
-    controllers: [CoursesController],
-    providers: [CreateCourseService],
+    controllers: [AdminCoursesController, PublicCoursesController],
+    providers: [
+        AdminCreateCourseService,
+        AdminFindAllCoursesService,
+        AdminFindCourseDetailsService,
+        AdminUpdateCourseService,
+        
+        PublicFindCoursesService,
+        // PublicFindCourseDetailsService,
+    ],
 })
 export class CoursesModule { }

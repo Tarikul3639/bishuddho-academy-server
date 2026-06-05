@@ -1,10 +1,16 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Types } from "mongoose";
 
+export enum CourseStatus {
+    ACTIVE = "active",
+    UPCOMING = "upcoming",
+    COMPLETED = "completed",
+}
+
 /* ─────────────────────────────
    Course Class (Sub Document)
 ───────────────────────────── */
-@Schema({ _id: true })
+@Schema({ _id: false })
 export class CourseClass {
     @Prop({ required: true })
     title!: string;
@@ -22,7 +28,7 @@ export const CourseClassSchema =
 /* ─────────────────────────────
    Course Module (Sub Document)
 ───────────────────────────── */
-@Schema({ _id: true })
+@Schema({ _id: false })
 export class CourseModule {
     @Prop({ required: true })
     title!: string;
@@ -58,6 +64,12 @@ export class Course {
     startDate!: Date;
 
     @Prop({ required: true })
+    schedule!: string;
+
+    @Prop({ required: true })
+    location!: string;
+
+    @Prop({ required: true })
     duration!: string;
 
     @Prop({ required: true })
@@ -78,10 +90,20 @@ export class Course {
 
     /* ── Status ── */
     @Prop({
-        enum: ["active", "upcoming", "completed"],
-        default: "upcoming",
+        enum: CourseStatus,
+        default: CourseStatus.UPCOMING,
     })
-    status!: string;
+    status!: CourseStatus;
+
+    @Prop({
+        default: 0,
+    })
+    averageRating!: number;
+
+    @Prop({
+        default: 0,
+    })
+    reviewCount!: number;
 
     /* ── Features / Includes ── */
     @Prop({ type: [String], default: [] })

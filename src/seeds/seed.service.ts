@@ -7,75 +7,48 @@ import { Enrollment } from "../database/schemas/enrollment.schema";
 import { Otp } from "../database/schemas/otp.schema";
 import { User } from "../database/schemas/user.schema";
 
-/* DATA */
-
+import { COURSE_COLLECTIONS } from "./data/course.data";
 
 @Injectable()
 export class SeedService {
-  constructor(
-    @InjectModel(User.name)
-    private readonly userModel: Model<User>,
+    constructor(
+        @InjectModel(User.name)
+        private readonly userModel: Model<User>,
 
-    @InjectModel(Otp.name)
-    private readonly otpModel: Model<Otp>,
+        @InjectModel(Otp.name)
+        private readonly otpModel: Model<Otp>,
 
-    @InjectModel(Course.name)
-    private readonly courseModel: Model<Course>,
+        @InjectModel(Course.name)
+        private readonly courseModel: Model<Course>,
 
-    @InjectModel(Enrollment.name)
-    private readonly enrollmentModel: Model<Enrollment>,
-  ) {}
+        @InjectModel(Enrollment.name)
+        private readonly enrollmentModel: Model<Enrollment>,
+    ) { }
 
-  async seed() {
-    console.log("🌱 Starting database seeding...");
+    async seed() {
+        console.log("🌱 Starting database seeding...");
 
-    /* -------------------------------- */
-    /* CLEAR All DATABASE BEFORE SEEDING */
-    /* -------------------------------- */
+        /* Clear database */
+        await Promise.all([
+            this.userModel.deleteMany({}),
+            this.otpModel.deleteMany({}),
+            this.courseModel.deleteMany({}),
+            this.enrollmentModel.deleteMany({}),
+        ]);
 
-    // await Promise.all([
-    //   this.seriesModel.deleteMany({}),
-    //   this.episodeModel.deleteMany({}),
-    //   this.movieModel.deleteMany({}),
-    // ]);
+        console.log("🗑 Existing data cleared");
 
-    // console.log("🗑 Existing data cleared");
+        /* Insert courses */
+        await this.courseModel.insertMany(COURSE_COLLECTIONS);
 
-    /* -------------------------------- */
-    /* SERIES DATA FILES */
-    /* -------------------------------- */
+        console.log(
+            "✅ Database seeding completed successfully!",
+        );
 
-    const COURSE_COLLECTIONS = [
-    ];
-
-    /* -------------------------------- */
-    /* INSERT COURSES */
-    /* -------------------------------- */
-
-    // for (const item of COURSE_COLLECTIONS) {
-    //   /* CREATE COURSE */
-
-    //   const createdCourse = await this.courseModel.create({
-    //     ...item.course,
-    //   });
-
-    //   console.log(`📺 Course created: ${createdCourse.title}`);
-
-    //   /* CREATE MODULES */
-
-    //   const formattedModules = item.modules.map((module) => ({
-    //     ...module,
-
-    //     course: createdCourse._id,
-    //   }));
-
-    //   await this.moduleModel.insertMany(formattedModules);
-
-    //   console.log(
-    //     `🎬 ${formattedModules.length} modules added for ${createdCourse.title}`
-    //   );
-    // }
-
-    console.log("✅ Database seeding completed successfully!");
-  }
+        return {
+            success: true,
+            totalCourses:
+                COURSE_COLLECTIONS.length,
+        };
+    }
 }

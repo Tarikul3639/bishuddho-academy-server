@@ -41,7 +41,7 @@ export class CreateCourseClassDto {
 /* ─────────────────────────────
    MODULE DTO
 ───────────────────────────── */
-export class CreateCourseModuleDto {
+export class AdminCreateCourseModuleDto {
     @ApiProperty()
     @IsString()
     title!: string;
@@ -56,7 +56,7 @@ export class CreateCourseModuleDto {
 /* ─────────────────────────────
    MAIN CREATE DTO (UPDATED)
 ───────────────────────────── */
-export class CreateCourseDto {
+export class AdminCreateCourseDto {
     @ApiProperty({ description: "The title of the course" })
     @IsString()
     title!: string;
@@ -139,10 +139,10 @@ export class CreateCourseDto {
     includes?: string[];
 
     /* ── Curriculum ── */
-    @ApiPropertyOptional({ type: [CreateCourseModuleDto] })
+    @ApiPropertyOptional({ type: [AdminCreateCourseModuleDto] })
     @IsOptional()
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => CreateCourseModuleDto)
-    modules?: CreateCourseModuleDto[];
+    @Type(() => AdminCreateCourseModuleDto)
+    modules?: AdminCreateCourseModuleDto[];
 }
