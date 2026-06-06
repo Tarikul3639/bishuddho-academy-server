@@ -19,13 +19,17 @@ export class User {
     status!: string;
 
     @Prop()
-    avatar?: string;
+    avatarUrl?: string;
 
     @Prop({ unique: true })
     studentId?: string;  // auto-generated: BA-2026-0001
 
     @Prop()
     lastLogin?: Date;
+
+    /* timestamps */
+    createdAt!: Date;
+    updatedAt!: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

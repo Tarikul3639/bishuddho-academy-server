@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
 import { Course } from "../../../database/schemas/course.schema";
-import { Enrollment } from "../../../database/schemas/enrollment.schema";
+import { Enrollment, EnrollmentStatus } from "../../../database/schemas/enrollment.schema";
 
 import { AdminFindAllCoursesResponseDto } from "../dto/admin-find-all-courses-response.dto";
 
@@ -21,7 +21,7 @@ export class AdminFindAllCoursesService {
             const enrollments =
                 await this.enrollmentModel.find({
                     courseId: course._id,
-                    status: "active",
+                    status: EnrollmentStatus.ACTIVE,
                 });
 
             const bookedSeats = enrollments.length;

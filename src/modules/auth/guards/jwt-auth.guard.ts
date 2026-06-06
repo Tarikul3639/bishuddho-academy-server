@@ -1,5 +1,3 @@
-// auth/guards/jwt-auth.guard.ts
-
 import {
     CanActivate,
     ExecutionContext,
@@ -8,6 +6,10 @@ import {
 } from "@nestjs/common";
 
 import { JwtService } from "@nestjs/jwt";
+
+import type { Request } from "express";
+
+import { JwtPayload } from "../interface/jwt-payload";
 
 @Injectable()
 export class JwtAuthGuard
@@ -19,11 +21,15 @@ export class JwtAuthGuard
 
     async canActivate(
         context: ExecutionContext,
-    ) {
+    ): Promise<boolean> {
         const request =
             context
                 .switchToHttp()
-                .getRequest();
+                .getRequest<
+                    Request & {
+                        user?: JwtPayload;
+                    }
+                >();
 
         const token =
             request.cookies?.access_token;
@@ -36,7 +42,7 @@ export class JwtAuthGuard
 
         try {
             const payload =
-                await this.jwtService.verifyAsync(
+                await this.jwtService.verifyAsync<JwtPayload>(
                     token,
                 );
 
@@ -46,7 +52,7 @@ export class JwtAuthGuard
             return true;
         } catch {
             throw new UnauthorizedException(
-                "Invalid token",
+                "Invalid or expired token",
             );
         }
     }

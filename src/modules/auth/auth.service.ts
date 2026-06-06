@@ -5,19 +5,26 @@ import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 
 import { User } from "../../database/schemas/user.schema";
+import { Enrollment, EnrollmentStatus } from "src/database/schemas/enrollment.schema";
 import { LoginDto } from "./dto/login.dto";
+import { LoginResponseDto } from "./dto/login-response.dto";
 
 import { JwtPayload } from "./interface/jwt-payload";
+import { UserRole } from "./decorators/roles.decorator";
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectModel(User.name)
         private readonly userModel: Model<User>,
+
         private readonly jwtService: JwtService,
+
+        @InjectModel(Enrollment.name)
+        private readonly enrollmentModel: Model<Enrollment>,
     ) { }
 
-    async login(loginDto: LoginDto) {
+    async login(loginDto: LoginDto): Promise<LoginResponseDto> {
         const { email, password } = loginDto;
 
         /* ─────────────────────────────
@@ -47,12 +54,25 @@ export class AuthService {
         }
 
         /* ─────────────────────────────
+              Count enrolled courses for students
+        ───────────────────────────── */
+        let enrolledCoursesCount: number | undefined = undefined;
+
+        if (user.role === UserRole.STUDENT) {
+            enrolledCoursesCount = await this.enrollmentModel.countDocuments({ userId: user._id, status: EnrollmentStatus.ACTIVE }).exec();
+        }
+
+        /* ─────────────────────────────
            4. Generate JWT Token
         ───────────────────────────── */
         const payload: JwtPayload = {
             userId: user._id.toJSON(),
+            name: user.name,
             email: user.email,
-            role: user.role
+            role: user.role as UserRole,
+            enrolledCourses: enrolledCoursesCount, // Only include for students
+            createdAt: user.createdAt.toDateString(),
+            avatarUrl: user.avatarUrl, // Include avatar URL if available
         };
 
         const accessToken = this.jwtService.sign(payload);
@@ -68,9 +88,9 @@ export class AuthService {
                 userId: user._id.toString(),
                 name: user.name,
                 email: user.email,
-                role: user.role,
-                avatar: user.avatar,
-                studentId: user.studentId,
+                role: user.role as UserRole,
+                avatarUrl: user.avatarUrl,
+                createdAt: user.createdAt.toDateString(),
             },
         };
     }
@@ -80,7 +100,7 @@ export class AuthService {
     ───────────────────────────── */
     async findUserById(
         userId: string,
-    ) {
+    ): Promise<JwtPayload> {
         const user =
             await this.userModel
                 .findById(userId)
@@ -92,15 +112,25 @@ export class AuthService {
             );
         }
 
+        /* ─────────────────────────────
+      Count enrolled courses for students
+───────────────────────────── */
+        let enrolledCoursesCount: number | undefined = undefined;
+        if (user.role === UserRole.STUDENT) {
+            enrolledCoursesCount = await this.enrollmentModel.countDocuments({ userId: user._id, status: EnrollmentStatus.ACTIVE }).exec();
+
+            console.log("Enroll course: ", enrolledCoursesCount);
+        }
+
         return {
             userId:
                 user._id.toString(),
             name: user.name,
             email: user.email,
-            role: user.role,
-            avatar: user.avatar,
-            studentId:
-                user.studentId,
+            role: user.role as UserRole,
+            avatarUrl: user.avatarUrl,
+            enrolledCourses: enrolledCoursesCount,
+            createdAt: user.createdAt.toDateString(),
         };
     }
 }

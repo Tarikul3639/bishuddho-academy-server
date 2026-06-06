@@ -24,7 +24,7 @@ export enum PaymentStatus {
 @Schema({ timestamps: true })
 export class PaymentSummary {
     @Prop({ enum: PaymentMethod, required: true })
-    method!: string;
+    method!: PaymentMethod;
 
     @Prop()
     trxId?: string;
@@ -36,7 +36,7 @@ export class PaymentSummary {
     paidAt!: string;
 
     @Prop({ enum: PaymentStatus, default: PaymentStatus.PENDING })
-    status!: string;
+    status!: PaymentStatus;
 }
 
 @Schema({ timestamps: true })
@@ -51,7 +51,7 @@ export class Enrollment {
     currentSession!: number;
 
     @Prop({ enum: EnrollmentStatus, default: EnrollmentStatus.PENDING })
-    status!: string;
+    status!: EnrollmentStatus;
 
     @Prop({ type: PaymentSummary, required: true })
     paymentSummary!: PaymentSummary;

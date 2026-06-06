@@ -1,6 +1,7 @@
 // src/auth/dto/login-response.dto.ts
 
 import { ApiProperty } from "@nestjs/swagger";
+import { UserRole } from "../decorators/roles.decorator";
 
 class UserPayloadDto {
     @ApiProperty({ example: "60d0fe4f5311236168a109ca" })
@@ -13,13 +14,13 @@ class UserPayloadDto {
     email!: string;
 
     @ApiProperty({ example: "student" })
-    role!: string;
+    role!: UserRole;
 
     @ApiProperty({ example: "https://example.com/avatar.png", required: false })
-    avatar?: string;
+    avatarUrl?: string;
 
-    @ApiProperty({ example: "BA-2026-0001", required: false })
-    studentId?: string;
+    @ApiProperty({ example: "2023-01-01" })
+    createdAt!: string;
 }
 
 export class LoginResponseDto {

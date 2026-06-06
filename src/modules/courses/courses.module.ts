@@ -16,8 +16,12 @@ import { AdminUpdateCourseService } from './service/admin-update-course.service'
 import { PublicFindCourseDetailsService } from "./service/public-find-course-details.service";
 import { PublicFindCoursesService } from "./service/public-find-courses.service";
 
+import { StudentFindMyCoursesService } from "./service/student-find-my-courses.service";
+import { StudentFindCourseDetailsService } from "./service/student-find-course-details.service";
+
 import { AdminCoursesController } from './controller/admin-courses.controller';
 import { PublicCoursesController } from './controller/public-courses.controller';
+import { StudentCoursesController } from './controller/student-courses.controller';
 
 @Module({
     imports: [
@@ -36,7 +40,7 @@ import { PublicCoursesController } from './controller/public-courses.controller'
             limits: { fileSize: 5 * 1024 * 1024 },
         }),
     ],
-    controllers: [AdminCoursesController, PublicCoursesController],
+    controllers: [AdminCoursesController, PublicCoursesController, StudentCoursesController],
     providers: [
         AdminCreateCourseService,
         AdminFindAllCoursesService,
@@ -45,6 +49,9 @@ import { PublicCoursesController } from './controller/public-courses.controller'
         
         PublicFindCoursesService,
         PublicFindCourseDetailsService,
+
+        StudentFindMyCoursesService,
+        StudentFindCourseDetailsService,
     ],
 })
 export class CoursesModule { }

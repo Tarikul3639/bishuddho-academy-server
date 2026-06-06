@@ -7,11 +7,18 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { User, UserSchema } from '../../database/schemas/user.schema';
+import {
+    Enrollment,
+    EnrollmentSchema,
+} from 'src/database/schemas/enrollment.schema';
 import { type StringValue } from 'ms'; // Import the type from ms
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+        MongooseModule.forFeature([
+            { name: User.name, schema: UserSchema },
+            { name: Enrollment.name, schema: EnrollmentSchema },
+        ]),
         JwtModule.registerAsync({
             global: true,
             imports: [ConfigModule],
