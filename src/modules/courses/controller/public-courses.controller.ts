@@ -12,7 +12,7 @@ import {
     ApiTags,
 } from "@nestjs/swagger";
 
-// import { PublicFindCourseDetailsService } from "../service/public-find-course-details.service";
+import { PublicFindCourseDetailsService } from "../service/public-find-course-details.service";
 import { PublicFindCoursesService } from "../service/public-find-courses.service";
 
 @ApiTags("Public Courses")
@@ -20,7 +20,7 @@ import { PublicFindCoursesService } from "../service/public-find-courses.service
 export class PublicCoursesController {
     constructor(
         private readonly findPublicCoursesService: PublicFindCoursesService,
-        // private readonly findPublicCourseDetailsService: PublicFindCourseDetailsService,
+        private readonly findPublicCourseDetailsService: PublicFindCourseDetailsService,
     ) { }
 
     @Get()
@@ -46,9 +46,10 @@ export class PublicCoursesController {
     findOne(
         @Param("courseId")
         courseId: string,
+        userId?: string,
     ) {
-        // return this.findPublicCourseDetailsService.findById(
-        //     courseId,
-        // );
+        return this.findPublicCourseDetailsService.findById(
+            courseId,
+        );
     }
 }

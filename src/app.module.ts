@@ -8,7 +8,7 @@ import { DatabaseModule } from './database/database.module';
 import { CoursesModule } from './modules/courses/courses.module';
 
 // _-_-_-_ Auth _-_-_-
-// import { AuthModule } from './modules/auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 // _-_-_-_ Seed _-_-_-.
 import { SeedModule } from './seeds/seed.module';
@@ -31,7 +31,7 @@ import { SeedModule } from './seeds/seed.module';
     }),
 
     DatabaseModule,
-    // AuthModule,
+    AuthModule,
     CoursesModule,
 
     SeedModule,

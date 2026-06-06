@@ -2,10 +2,28 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import * as MongooseSchema from 'mongoose';
 
+export enum PaymentMethod {
+    BKASH = "bkash",
+    NAGAD = "nagad",
+    CASH = "cash"
+}
+
+export enum EnrollmentStatus {
+    ACTIVE = "active",
+    PENDING = "pending",
+    COMPLETED = "completed"
+}
+
+export enum PaymentStatus {
+    PENDING = "pending",
+    VERIFIED = "verified",
+    REJECTED = "rejected"
+}
+
 // enrollment.schema.ts
 @Schema({ timestamps: true })
 export class PaymentSummary {
-    @Prop({ enum: ["bkash", "nagad", "cash"], required: true })
+    @Prop({ enum: PaymentMethod, required: true })
     method!: string;
 
     @Prop()
@@ -17,7 +35,7 @@ export class PaymentSummary {
     @Prop({ required: true })
     paidAt!: string;
 
-    @Prop({ enum: ["pending", "verified", "rejected"], default: "pending" })
+    @Prop({ enum: PaymentStatus, default: PaymentStatus.PENDING })
     status!: string;
 }
 
@@ -32,7 +50,7 @@ export class Enrollment {
     @Prop({ default: 0 })
     currentSession!: number;
 
-    @Prop({ enum: ["active", "pending", "completed"], default: "pending" })
+    @Prop({ enum: EnrollmentStatus, default: EnrollmentStatus.PENDING })
     status!: string;
 
     @Prop({ type: PaymentSummary, required: true })

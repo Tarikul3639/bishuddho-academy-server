@@ -1,84 +1,101 @@
-// // service/find-public-course-details.service.ts
+// service/public-find-course-details.service.ts
 
-// import {
-//     Injectable,
-//     NotFoundException,
-// } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
-// import { InjectModel } from "@nestjs/mongoose";
-// import { Model } from "mongoose";
+import { Course } from "../../../database/schemas/course.schema";
+import { Enrollment } from "../../../database/schemas/enrollment.schema";
+import { PublicCourseDetailsResponseDto } from "../dto/public-course-details-response.dto";
 
-// import { Course } from "../../../database/schemas/course.schema";
+@Injectable()
+export class PublicFindCourseDetailsService {
+    constructor(
+        @InjectModel(Course.name)
+        private readonly courseModel: Model<Course>,
 
-// import { PublicCourseResponseDto } from "../dto/public-course-response.dto";
+        @InjectModel(Enrollment.name)
+        private readonly enrollmentModel: Model<Enrollment>,
+    ) { }
 
-// @Injectable()
-// export class PublicFindCourseDetailsService {
-//     constructor(
-//         @InjectModel(Course.name)
-//         private courseModel: Model<Course>,
-//     ) {}
+    async findById(courseId: string, userId?: string): Promise<PublicCourseDetailsResponseDto> {
+        const course = await this.courseModel.findById(courseId).lean().exec();
 
-//     async findById(
-//         courseId: string,
-//     ): Promise<PublicCourseResponseDto> {
+        if (!course) {
+            throw new NotFoundException("Course not found");
+        }
 
-//         const course =
-//             await this.courseModel
-//                 .findById(courseId)
-//                 .lean()
-//                 .exec();
+        /* Students / Booked Seats */
+        const bookedSeats = await this.enrollmentModel.countDocuments({
+            course: course._id,
+        });
 
-//         if (!course) {
-//             throw new NotFoundException(
-//                 "Course not found",
-//             );
-//         }
+        /* Total Lessons */
+        const lessons =
+            course.modules?.reduce(
+                (total, module) => total + (module.classes?.length || 0),
+                0,
+            ) || 0;
 
-//         return {
-//             courseId:
-//                 course._id.toString(),
+        /* Discount */
+        const discount =
+            course.originalPrice > 0
+                ? Math.round(
+                    ((course.originalPrice - course.price) / course.originalPrice) * 100,
+                )
+                : 0;
 
-//             title:
-//                 course.title,
+        /* Days Left */
+        const daysLeft = Math.max(
+            0,
+            Math.ceil(
+                (new Date(course.startDate).getTime() - Date.now()) /
+                (1000 * 60 * 60 * 24),
+            ),
+        );
 
-//             tagline:
-//                 course.tagline,
+        let isEnrolled = false;
 
-//             description:
-//                 course.description,
+        if (userId) {
+            const enrollment =
+                await this.enrollmentModel.exists({
+                    course: course._id,
+                    user: userId,
+                });
 
-//             thumbnailUrl:
-//                 course.thumbnailUrl,
+            isEnrolled = !!enrollment;
+        }
 
-//             instructor:
-//                 course.instructor,
-
-//             startDate:
-//                 course.startDate,
-
-//             duration:
-//                 course.duration,
-
-//             price:
-//                 course.price,
-
-//             originalPrice:
-//                 course.originalPrice,
-
-//             lessons:
-//                 course.modules?.reduce(
-//                     (total, module) =>
-//                         total +
-//                         (module.classes?.length || 0),
-//                     0,
-//                 ) || 0,
-
-//             includes:
-//                 course.includes || [],
-
-//             status:
-//                 course.status,
-//         };
-//     }
-// }
+        return {
+            courseId: course._id.toString(),
+            title: course.title,
+            tagline: course.tagline,
+            description: course.description,
+            thumbnailUrl: course.thumbnailUrl,
+            instructor: course.instructor,
+            averageRating: course.averageRating,
+            reviewCount: course.reviewCount,
+            students: bookedSeats,
+            price: course.price,
+            originalPrice: course.originalPrice,
+            discount,
+            daysLeft,
+            duration: course.duration,
+            lessons,
+            totalSeats: course.totalSeats,
+            bookedSeats,
+            schedule: course.schedule,
+            location: course.location,
+            startDate: course.startDate,
+            isEnrolled: isEnrolled,
+            includes: course.includes || [],
+            modules: course.modules?.map((module) => ({
+                title: module.title,
+                classes: module.classes?.map((cls) => ({
+                    title: cls.title,
+                    session: cls.session,
+                })) || [],
+            })) || [],
+        };
+    }
+}

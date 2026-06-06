@@ -11,9 +11,10 @@ export const envValidationSchema = Joi.object({
     /* DATABASE */
     MONGO_URI: Joi.string().required(),
 
-    /* AUTH (optional for now) */
-    JWT_ACCESS_SECRET: Joi.string().default("deenseries-access-key"),
+    /* JWT AUTHENTICATION */
+    JWT_ACCESS_SECRET: Joi.string().required(),
     JWT_ACCESS_EXPIRES_IN: Joi.string().default("10m"),
-    JWT_REFRESH_SECRET: Joi.string().default("deenseries-refresh-key"),
-    JWT_REFRESH_EXPIRES_IN: Joi.string().default("7d")
+
+    JWT_REFRESH_SECRET: Joi.string().required(),
+    JWT_REFRESH_EXPIRES_IN: Joi.string().default("7d"),
 });

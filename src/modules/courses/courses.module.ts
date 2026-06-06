@@ -6,13 +6,14 @@ import {
     Enrollment,
     EnrollmentSchema,
 } from '../../database/schemas/enrollment.schema';
+import { Review, ReviewSchema } from 'src/database/schemas/review.schema';
 
 import { AdminFindAllCoursesService } from './service/admin-find-all-courses.service';
 import { AdminCreateCourseService } from './service/admin-courses-create.service';
 import { AdminFindCourseDetailsService } from './service/admin-find-courses-details.service';
 import { AdminUpdateCourseService } from './service/admin-update-course.service';
 
-// import { PublicFindCourseDetailsService } from "./service/public-find-course-details.service";
+import { PublicFindCourseDetailsService } from "./service/public-find-course-details.service";
 import { PublicFindCoursesService } from "./service/public-find-courses.service";
 
 import { AdminCoursesController } from './controller/admin-courses.controller';
@@ -23,6 +24,7 @@ import { PublicCoursesController } from './controller/public-courses.controller'
         MongooseModule.forFeature([
             { name: Course.name, schema: CourseSchema },
             { name: Enrollment.name, schema: EnrollmentSchema },
+            { name: Review.name, schema: ReviewSchema },
         ]),
         MulterModule.register({
             fileFilter: (req, file, cb) => {
@@ -42,7 +44,7 @@ import { PublicCoursesController } from './controller/public-courses.controller'
         AdminUpdateCourseService,
         
         PublicFindCoursesService,
-        // PublicFindCourseDetailsService,
+        PublicFindCourseDetailsService,
     ],
 })
 export class CoursesModule { }
