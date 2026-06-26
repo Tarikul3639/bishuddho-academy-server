@@ -2,54 +2,47 @@ import {
     Body,
     Controller,
     Get,
+    Patch,
     Post,
-    Req,
     Res,
-    UnauthorizedException,
-} from "@nestjs/common";
+    UseGuards,
+} from '@nestjs/common';
 
-import { ConfigService } from "@nestjs/config";
+import { ConfigService } from '@nestjs/config';
 
-import {
-    ApiBody,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
-} from "@nestjs/swagger";
+import { ApiBody, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import type {
-    Request,
-    Response,
-} from "express";
+import type { Response } from 'express';
 
-import ms, {
-    type StringValue,
-} from "ms";
+import ms, { type StringValue } from 'ms';
 
-import { JwtService } from "@nestjs/jwt";
+import { AuthService } from './auth.service';
+import { UsersService } from './users.service';
 
-import { AuthService } from "./auth.service";
+import { LoginDto } from './dto/login.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
 
-import { LoginDto } from "./dto/login.dto";
-import { LoginResponseDto } from "./dto/login-response.dto";
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { UpdateProfileDto } from './dto/profile-update.dto';
+import { ProfileResponseDto } from './dto/profile-response.dto';
 
-@ApiTags("Authentication")
-@Controller("auth")
+@ApiTags('Authentication')
+@Controller('auth')
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
         private readonly configService: ConfigService,
-        private readonly jwtService: JwtService,
-    ) {}
+        private readonly usersService: UsersService,
+    ) { }
 
     /* ─────────────────────────────
-       LOGIN
-    ───────────────────────────── */
+         LOGIN
+      ───────────────────────────── */
 
-    @Post("login")
+    @Post('login')
     @ApiOperation({
-        summary:
-            "Log in user",
+        summary: 'Log in user',
     })
     @ApiBody({
         type: LoginDto,
@@ -67,43 +60,28 @@ export class AuthController {
         })
         res: Response,
     ): Promise<LoginResponseDto> {
-        const result =
-            await this.authService.login(
-                loginDto,
-            );
+        const result = await this.authService.login(loginDto);
 
         const expiresIn =
-            this.configService.get<string>(
-                "JWT_ACCESS_EXPIRES_IN",
-            ) || "7d";
+            this.configService.get<string>('JWT_ACCESS_EXPIRES_IN') || '7d';
 
-        res.cookie(
-            "access_token",
-            result.accessToken,
-            {
-                httpOnly: true,
-                secure:
-                    process.env
-                        .NODE_ENV ===
-                    "production",
-                sameSite: "strict",
-                maxAge: ms(
-                    expiresIn as StringValue,
-                ),
-            },
-        );
+        res.cookie('access_token', result.accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: ms(expiresIn as StringValue),
+        });
 
         return result;
     }
 
     /* ─────────────────────────────
-       LOGOUT
-    ───────────────────────────── */
+         LOGOUT
+      ───────────────────────────── */
 
-    @Post("logout")
+    @Post('logout')
     @ApiOperation({
-        summary:
-            "Logout user",
+        summary: 'Logout user',
     })
     logout(
         @Res({
@@ -111,60 +89,76 @@ export class AuthController {
         })
         res: Response,
     ) {
-        res.clearCookie(
-            "access_token",
-            {
-                httpOnly: true,
-                secure:
-                    process.env
-                        .NODE_ENV ===
-                    "production",
-                sameSite: "strict",
-            },
-        );
+        res.clearCookie('access_token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+        });
 
         return {
             success: true,
-            message:
-                "Logout successful",
+            message: 'Logout successful',
         };
     }
 
     /* ─────────────────────────────
-       CURRENT USER
-    ───────────────────────────── */
+         CURRENT USER
+      ───────────────────────────── */
 
-    @Get("me")
+    @Get('me')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({
-        summary:
-            "Get current logged in user",
+        summary: 'Get current logged in user',
     })
-    async me(
-        @Req()
-        req: Request,
+    async me(@CurrentUser('userId') userId: string) {
+        return this.authService.findUserById(userId);
+    }
+
+    /* ─────────────────────────────
+         PASSWORD CHANGE
+      ───────────────────────────── */
+
+    @Patch('password')
+    @UseGuards(JwtAuthGuard)
+    async changePassword(
+        @CurrentUser('userId')
+        userId: string,
+
+        @Body()
+        body: {
+            current: string;
+            next: string;
+        },
     ) {
-        const token =
-            req.cookies?.access_token;
+        return this.authService.changePassword(userId, body.current, body.next);
+    }
 
-        if (!token) {
-            throw new UnauthorizedException(
-                "Unauthenticated",
-            );
-        }
+    /* ─────────────────────────────
+         PROFILE RETRIEVAL
+      ───────────────────────────── */
 
-        try {
-            const payload =
-                await this.jwtService.verifyAsync(
-                    token,
-                );
+    @Get('profile')
+    @UseGuards(JwtAuthGuard)
+    @ApiOkResponse({ type: ProfileResponseDto })
+    async getProfile(
+        @CurrentUser('userId') userId: string,
+    ): Promise<ProfileResponseDto> {
+        return this.usersService.getProfile(userId);
+    }
 
-            return this.authService.findUserById(
-                payload.userId,
-            );
-        } catch {
-            throw new UnauthorizedException(
-                "Invalid token",
-            );
-        }
+    /* ─────────────────────────────
+         PROFILE UPDATE
+      ───────────────────────────── */
+
+    @Patch('profile')
+    @UseGuards(JwtAuthGuard)
+    @ApiOperation({ summary: 'Update the authenticated user profile' })
+    @ApiOkResponse({ description: 'Profile updated successfully.' })
+    async updateProfile(
+        @CurrentUser('userId') userId: string,
+        @Body() dto: UpdateProfileDto,
+    ): Promise<{ message: string }> {
+        await this.usersService.updateProfile(userId, dto);
+        return { message: 'Profile updated successfully.' };
     }
 }

@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { UsersService } from './users.service';
 import { User, UserSchema } from '../../database/schemas/user.schema';
 import {
     Enrollment,
@@ -33,6 +34,6 @@ import { type StringValue } from 'ms'; // Import the type from ms
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService],
+    providers: [AuthService, UsersService],
 })
 export class AuthModule { }

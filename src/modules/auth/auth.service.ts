@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 
@@ -118,8 +118,6 @@ export class AuthService {
         let enrolledCoursesCount: number | undefined = undefined;
         if (user.role === UserRole.STUDENT) {
             enrolledCoursesCount = await this.enrollmentModel.countDocuments({ userId: user._id, status: EnrollmentStatus.ACTIVE }).exec();
-
-            console.log("Enroll course: ", enrolledCoursesCount);
         }
 
         return {
@@ -131,6 +129,48 @@ export class AuthService {
             avatarUrl: user.avatarUrl,
             enrolledCourses: enrolledCoursesCount,
             createdAt: user.createdAt.toDateString(),
+        };
+    }
+
+    /* ─────────────────────────────
+       Logout User
+    ───────────────────────────── */
+    async logout(): Promise<{ success: boolean; message: string }> {
+        return {
+            success: true,
+            message:
+                "Logout successful",
+        };
+    }
+
+    /* ─────────────────────────────
+       Change Password
+    ───────────────────────────── */
+    async changePassword(
+        userId: string,
+        currentPassword: string,
+        newPassword: string,
+    ): Promise<{ success: boolean; message: string }> {
+        const userObjectId = new Types.ObjectId(userId);
+        const user = await this.userModel.findById(userObjectId).select("+password").exec();
+
+        if (!user) {
+            throw new UnauthorizedException("User not found");
+        }
+
+        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+
+        if (!isCurrentPasswordValid) {
+            throw new UnauthorizedException("Current password is incorrect");
+        }
+
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedNewPassword;
+        await user.save();
+
+        return {
+            success: true,
+            message: "Password changed successfully",
         };
     }
 }
