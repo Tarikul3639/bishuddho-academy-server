@@ -27,7 +27,7 @@ export class PublicFindCourseDetailsService {
 
         /* Students / Booked Seats */
         const bookedSeats = await this.enrollmentModel.countDocuments({
-            course: course._id,
+            courseId: course._id,
         });
 
         /* Total Lessons */
@@ -59,8 +59,8 @@ export class PublicFindCourseDetailsService {
         if (userId) {
             const enrollment =
                 await this.enrollmentModel.exists({
-                    course: course._id,
-                    user: userId,
+                    courseId: course._id,
+                    userId: new Types.ObjectId(userId),
                 });
 
             isEnrolled = !!enrollment;

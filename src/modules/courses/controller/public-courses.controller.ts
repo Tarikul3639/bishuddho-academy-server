@@ -31,10 +31,12 @@ export class PublicCoursesController {
     findAll(
         @Query("page") page?: number,
         @Query("limit") limit?: number,
+        @Query("userId") userId?: string,
     ) {
         return this.findPublicCoursesService.findAll({
             page,
             limit,
+            userId,
         });
     }
 
@@ -46,10 +48,11 @@ export class PublicCoursesController {
     findOne(
         @Param("courseId")
         courseId: string,
-        userId?: string,
+        @Query("userId") userId?: string,
     ) {
         return this.findPublicCourseDetailsService.findById(
             courseId,
+            userId,
         );
     }
 }

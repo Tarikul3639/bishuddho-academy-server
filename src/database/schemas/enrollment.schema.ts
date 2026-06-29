@@ -5,6 +5,8 @@ import * as MongooseSchema from 'mongoose';
 export enum PaymentMethod {
     BKASH = "bkash",
     NAGAD = "nagad",
+    ROCKET = "rocket",
+    BANK_TRANSFER = "bank_transfer",
     CASH = "cash"
 }
 
