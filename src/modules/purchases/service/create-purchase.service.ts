@@ -2,8 +2,8 @@ import { Injectable, NotFoundException, ConflictException, BadRequestException }
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
-import { Enrollment, EnrollmentStatus, PaymentStatus } from '../../database/schemas/enrollment.schema';
-import { Course } from '../../database/schemas/course.schema';
+import { Enrollment, EnrollmentStatus, PaymentStatus } from '../../../database/schemas/enrollment.schema';
+import { Course } from '../../../database/schemas/course.schema';
 import { CreatePurchaseDto } from '../dto/create-purchase.dto';
 
 @Injectable()

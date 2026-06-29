@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
-import { Enrollment, EnrollmentStatus, PaymentStatus } from '../../database/schemas/enrollment.schema';
-import { Course } from '../../database/schemas/course.schema';
+import { Enrollment, EnrollmentStatus, PaymentStatus } from '../../../database/schemas/enrollment.schema';
+import { Course } from '../../../database/schemas/course.schema';
 import { UpdatePurchaseStatusDto } from '../dto/update-purchase-status.dto';
 
 @Injectable()
@@ -36,9 +36,9 @@ export class AdminPurchasesService {
             .lean()
             .exec();
 
-        return enrollments.map((enrollment) => {
-            const course = enrollment.courseId as any;
-            const user = enrollment.userId as any;
+        return enrollments.map((enrollment: any) => {
+            const course = enrollment.courseId;
+            const user = enrollment.userId;
 
             return {
                 id: enrollment._id.toString(),
@@ -72,8 +72,8 @@ export class AdminPurchasesService {
             throw new NotFoundException('Purchase record not found');
         }
 
-        const course = enrollment.courseId as any;
-        const user = enrollment.userId as any;
+        const course = (enrollment as any).courseId;
+        const user = (enrollment as any).userId;
 
         return {
             id: enrollment._id.toString(),
@@ -85,14 +85,14 @@ export class AdminPurchasesService {
             studentName: user?.name || 'Unknown',
             studentEmail: user?.email || '',
             studentPhone: user?.phone || null,
-            method: enrollment.paymentSummary.method,
-            trxId: enrollment.paymentSummary.trxId || null,
-            amount: enrollment.paymentSummary.amount,
-            paymentStatus: enrollment.paymentSummary.status,
-            enrollmentStatus: enrollment.status,
-            paidAt: enrollment.paymentSummary.paidAt,
-            createdAt: enrollment.createdAt,
-            updatedAt: enrollment.updatedAt,
+            method: (enrollment as any).paymentSummary.method,
+            trxId: (enrollment as any).paymentSummary.trxId || null,
+            amount: (enrollment as any).paymentSummary.amount,
+            paymentStatus: (enrollment as any).paymentSummary.status,
+            enrollmentStatus: (enrollment as any).status,
+            paidAt: (enrollment as any).paymentSummary.paidAt,
+            createdAt: (enrollment as any).createdAt,
+            updatedAt: (enrollment as any).updatedAt,
         };
     }
 
