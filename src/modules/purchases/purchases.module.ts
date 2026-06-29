@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { Enrollment, EnrollmentSchema } from '../database/schemas/enrollment.schema';
-import { Course, CourseSchema } from '../database/schemas/course.schema';
+import { Enrollment, EnrollmentSchema } from '../../database/schemas/enrollment.schema';
+import { Course, CourseSchema } from '../../database/schemas/course.schema';
 
 import { PurchasesController } from './controller/purchases.controller';
 import { CreatePurchaseService } from './service/create-purchase.service';

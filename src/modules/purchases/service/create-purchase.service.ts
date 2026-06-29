@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 
 import { Enrollment, EnrollmentStatus, PaymentStatus } from '../../database/schemas/enrollment.schema';
 import { Course } from '../../database/schemas/course.schema';
-import { CreatePurchaseDto } from './dto/create-purchase.dto';
+import { CreatePurchaseDto } from '../dto/create-purchase.dto';
 
 @Injectable()
 export class CreatePurchaseService {

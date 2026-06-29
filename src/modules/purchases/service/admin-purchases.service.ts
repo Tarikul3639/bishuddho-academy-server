@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 
 import { Enrollment, EnrollmentStatus, PaymentStatus } from '../../database/schemas/enrollment.schema';
 import { Course } from '../../database/schemas/course.schema';
-import { UpdatePurchaseStatusDto } from './dto/update-purchase-status.dto';
+import { UpdatePurchaseStatusDto } from '../dto/update-purchase-status.dto';
 
 @Injectable()
 export class AdminPurchasesService {

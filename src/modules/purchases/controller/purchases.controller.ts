@@ -6,10 +6,10 @@ import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { UserRole } from '../../auth/decorators/roles.decorator';
 
-import { CreatePurchaseService } from './service/create-purchase.service';
-import { AdminPurchasesService } from './service/admin-purchases.service';
-import { CreatePurchaseDto } from './dto/create-purchase.dto';
-import { UpdatePurchaseStatusDto } from './dto/update-purchase-status.dto';
+import { CreatePurchaseService } from '../service/create-purchase.service';
+import { AdminPurchasesService } from '../service/admin-purchases.service';
+import { CreatePurchaseDto } from '../dto/create-purchase.dto';
+import { UpdatePurchaseStatusDto } from '../dto/update-purchase-status.dto';
 
 @ApiTags('Purchases')
 @Controller('purchases')
