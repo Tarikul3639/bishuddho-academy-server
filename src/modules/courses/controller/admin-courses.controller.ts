@@ -33,6 +33,9 @@ import { AdminCreateCourseDto } from "../dto/admin-create-course.dto";
 import { AdminUpdateCourseDto } from "../dto/admin-update-course.dto";
 import { AdminFindAllCoursesResponseDto } from "../dto/admin-find-all-courses-response.dto";
 import { AdminFindCourseDetailsResponseDto } from "../dto/admin-find-course-details-response.dto";
+import { AdminVerifyPaymentService } from "../service/admin-verify-payment.service";
+import { AdminRejectPaymentService } from "../service/admin-reject-payment.service";
+import { AdminRejectPaymentDto } from "../dto/admin-reject-payment.dto";
 
 @ApiTags("Admin Courses")
 @Controller("admin/courses")
@@ -42,7 +45,9 @@ export class AdminCoursesController {
         private readonly adminFindAllCoursesService: AdminFindAllCoursesService,
         private readonly adminFindCourseDetailsService: AdminFindCourseDetailsService,
         private readonly adminUpdateCourseService: AdminUpdateCourseService,
-    ) {}
+        private readonly adminVerifyPaymentService: AdminVerifyPaymentService,
+        private readonly adminRejectPaymentService: AdminRejectPaymentService,
+    ) { }
 
     /* CREATE COURSE */
     @Post()
@@ -212,5 +217,47 @@ export class AdminCoursesController {
         courseId: string,
     ) {
         return `Delete course with ID ${courseId}`;
+    }
+
+    // PAYMENT VERIFICATION
+    @Patch("payments/:paymentId/verify")
+    @ApiBearerAuth()
+    @ApiOperation({
+        summary: "Verify payment",
+    })
+    @ApiResponse({
+        status: 200,
+        description: "Payment verified successfully",
+    })
+    verifyPayment(
+        @Param("paymentId")
+        paymentId: string,
+    ) {
+        return this.adminVerifyPaymentService.verify(
+            paymentId,
+        );
+    }
+
+    // PAYMENT REJECTION
+    @Patch("payments/:paymentId/reject")
+    @ApiBearerAuth()
+    @ApiOperation({
+        summary: "Reject payment",
+    })
+    @ApiResponse({
+        status: 200,
+        description: "Payment rejected successfully",
+    })
+    rejectPayment(
+        @Param("paymentId")
+        paymentId: string,
+
+        @Body()
+        dto: AdminRejectPaymentDto,
+    ) {
+        return this.adminRejectPaymentService.reject(
+            paymentId,
+            dto.reason,
+        );
     }
 }

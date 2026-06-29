@@ -6,6 +6,7 @@ import {
     Enrollment,
     EnrollmentSchema,
 } from '../../database/schemas/enrollment.schema';
+import { Payment, PaymentSchema } from '../../database/schemas/payment.schema';
 import { Review, ReviewSchema } from 'src/database/schemas/review.schema';
 
 import { AdminFindAllCoursesService } from './service/admin-find-all-courses.service';
@@ -19,6 +20,9 @@ import { PublicFindCoursesService } from "./service/public-find-courses.service"
 import { StudentFindMyCoursesService } from "./service/student-find-my-courses.service";
 import { StudentFindCourseDetailsService } from "./service/student-find-course-details.service";
 
+import { AdminVerifyPaymentService } from "./service/admin-verify-payment.service";
+import { AdminRejectPaymentService } from "./service/admin-reject-payment.service";
+
 import { AdminCoursesController } from './controller/admin-courses.controller';
 import { PublicCoursesController } from './controller/public-courses.controller';
 import { StudentCoursesController } from './controller/student-courses.controller';
@@ -28,6 +32,7 @@ import { StudentCoursesController } from './controller/student-courses.controlle
         MongooseModule.forFeature([
             { name: Course.name, schema: CourseSchema },
             { name: Enrollment.name, schema: EnrollmentSchema },
+            { name: Payment.name, schema: PaymentSchema },
             { name: Review.name, schema: ReviewSchema },
         ]),
         MulterModule.register({
@@ -46,6 +51,9 @@ import { StudentCoursesController } from './controller/student-courses.controlle
         AdminFindAllCoursesService,
         AdminFindCourseDetailsService,
         AdminUpdateCourseService,
+
+        AdminVerifyPaymentService,
+        AdminRejectPaymentService,
         
         PublicFindCoursesService,
         PublicFindCourseDetailsService,

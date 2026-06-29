@@ -13,6 +13,7 @@ import {
     EnrollmentSchema,
 } from 'src/database/schemas/enrollment.schema';
 import { type StringValue } from 'ms'; // Import the type from ms
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { type StringValue } from 'ms'; // Import the type from ms
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService, UsersService],
+    providers: [AuthService, UsersService, JwtAuthGuard],
+    exports: [JwtAuthGuard],
 })
 export class AuthModule { }

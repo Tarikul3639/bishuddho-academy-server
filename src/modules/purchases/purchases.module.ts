@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { Enrollment, EnrollmentSchema } from '../../database/schemas/enrollment.schema';
+import { Payment, PaymentSchema } from '../../database/schemas/payment.schema';
 import { Course, CourseSchema } from '../../database/schemas/course.schema';
 
 import { PurchasesController } from './controller/purchases.controller';
@@ -12,6 +13,7 @@ import { AdminPurchasesService } from './service/admin-purchases.service';
     imports: [
         MongooseModule.forFeature([
             { name: Enrollment.name, schema: EnrollmentSchema },
+            { name: Payment.name, schema: PaymentSchema },
             { name: Course.name, schema: CourseSchema },
         ]),
     ],

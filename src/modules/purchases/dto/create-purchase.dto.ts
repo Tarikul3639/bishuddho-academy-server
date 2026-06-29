@@ -1,5 +1,13 @@
-import { IsEnum, IsMongoId, IsOptional, IsString, MinLength, ValidateIf } from 'class-validator';
-import { PaymentMethod } from '../../../database/schemas/enrollment.schema';
+import {
+    IsEnum,
+    IsMongoId,
+    IsOptional,
+    IsString,
+    MinLength,
+    ValidateIf,
+} from "class-validator";
+
+import { PaymentMethod } from "../../../database/schemas/payment.schema";
 
 export class CreatePurchaseDto {
     @IsMongoId()
@@ -8,9 +16,8 @@ export class CreatePurchaseDto {
     @IsEnum(PaymentMethod)
     method!: PaymentMethod;
 
-    @IsOptional()
+    @ValidateIf((o) => o.method !== PaymentMethod.CASH)
     @IsString()
     @MinLength(6)
-    @ValidateIf((o) => o.method !== PaymentMethod.CASH)
     trxId?: string;
 }

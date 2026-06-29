@@ -1,5 +1,5 @@
-import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { PaymentStatus } from '../../../database/schemas/enrollment.schema';
+import { IsEnum, IsOptional, IsString } from "class-validator";
+import { PaymentStatus } from "../../../database/schemas/payment.schema";
 
 export class UpdatePurchaseStatusDto {
     @IsEnum(PaymentStatus)
@@ -7,5 +7,5 @@ export class UpdatePurchaseStatusDto {
 
     @IsOptional()
     @IsString()
-    note?: string;
+    rejectionReason?: string;
 }

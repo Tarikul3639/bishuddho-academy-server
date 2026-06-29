@@ -1,60 +1,82 @@
+// service/admin-find-all-courses.service.ts
+
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
 import { Course } from "../../../database/schemas/course.schema";
-import { Enrollment, EnrollmentStatus } from "../../../database/schemas/enrollment.schema";
+import {
+  Enrollment,
+  EnrollmentStatus,
+} from "../../../database/schemas/enrollment.schema";
+import {
+  Payment,
+  PaymentStatus,
+} from "../../../database/schemas/payment.schema";
 
 import { AdminFindAllCoursesResponseDto } from "../dto/admin-find-all-courses-response.dto";
 
 @Injectable()
 export class AdminFindAllCoursesService {
-    constructor(
-        @InjectModel(Course.name) private courseModel: Model<Course>,
-        @InjectModel(Enrollment.name) private enrollmentModel: Model<Enrollment>,
-    ) { }
+  constructor(
+    @InjectModel(Course.name)
+    private readonly courseModel: Model<Course>,
 
-    async findAll(): Promise<AdminFindAllCoursesResponseDto[]> {
-        const courses = await this.courseModel.find().lean().exec();
+    @InjectModel(Enrollment.name)
+    private readonly enrollmentModel: Model<Enrollment>,
 
-        return Promise.all(courses.map(async (course) => {
-            const enrollments =
-                await this.enrollmentModel.find({
-                    courseId: course._id,
-                    status: EnrollmentStatus.ACTIVE,
-                });
+    @InjectModel(Payment.name)
+    private readonly paymentModel: Model<Payment>,
+  ) {}
 
-            const bookedSeats = enrollments.length;
+  async findAll(): Promise<AdminFindAllCoursesResponseDto[]> {
+    const courses = await this.courseModel.find().lean().exec();
 
-            const revenue = enrollments.reduce((sum, enrollment) => {
-                return sum + (enrollment.paymentSummary?.amount || 0);
-            }, 0);
+    return Promise.all(
+      courses.map(async (course) => {
+        const enrollments = await this.enrollmentModel
+          .find({
+            courseId: course._id,
+            status: EnrollmentStatus.ACTIVE,
+          })
+          .lean()
+          .exec();
 
-            const lessons =
-                course.modules?.reduce(
-                    (total, module) =>
-                        total +
-                        (module.classes.length || 0),
-                    0,
-                ) || 0;
+        const bookedSeats = enrollments.length;
+        const enrollmentIds = enrollments.map((e) => e._id);
 
-            return {
-                courseId: course._id.toString(),
+        const payments = await this.paymentModel
+          .find({
+            enrollmentId: { $in: enrollmentIds },
+            status: PaymentStatus.VERIFIED,
+          })
+          .lean()
+          .exec();
 
-                title: course.title,
-                instructor: course.instructor,
+        const revenue = payments.reduce(
+          (sum, payment) => sum + payment.amount,
+          0,
+        );
 
-                schedule: course.schedule,
-                location: course.location,
+        const lessons =
+          course.modules?.reduce(
+            (total, module) => total + (module.classes?.length || 0),
+            0,
+          ) || 0;
 
-                status: course.status,
-
-                totalSeats: course.totalSeats,
-                bookedSeats,
-
-                revenue,
-                lessons,
-            };
-        }));
-    }
+        return {
+          courseId: course._id.toString(),
+          title: course.title,
+          instructor: course.instructor,
+          schedule: course.schedule,
+          location: course.location,
+          status: course.status,
+          totalSeats: course.totalSeats,
+          bookedSeats,
+          revenue,
+          lessons,
+        };
+      }),
+    );
+  }
 }
