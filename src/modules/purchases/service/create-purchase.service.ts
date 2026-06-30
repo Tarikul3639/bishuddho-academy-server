@@ -67,7 +67,6 @@ export class CreatePurchaseService {
         const enrollment = await this.enrollmentModel.create({
             userId: new Types.ObjectId(userId),
             courseId: new Types.ObjectId(dto.courseId),
-            currentSession: 0,
             status: EnrollmentStatus.PENDING,
         });
 

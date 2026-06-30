@@ -27,11 +27,6 @@ export class Enrollment {
     courseId!: Types.ObjectId;
 
     @Prop({
-        default: 0,
-    })
-    currentSession!: number;
-
-    @Prop({
         enum: EnrollmentStatus,
         default: EnrollmentStatus.PENDING,
     })

@@ -5,12 +5,12 @@ import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 
 import { User } from "../../database/schemas/user.schema";
+import { UserRole } from "../../database/schemas/user.schema";
 import { Enrollment, EnrollmentStatus } from "src/database/schemas/enrollment.schema";
 import { LoginDto } from "./dto/login.dto";
 import { LoginResponseDto } from "./dto/login-response.dto";
 
 import { JwtPayload } from "./interface/jwt-payload";
-import { UserRole } from "./decorators/roles.decorator";
 
 @Injectable()
 export class AuthService {

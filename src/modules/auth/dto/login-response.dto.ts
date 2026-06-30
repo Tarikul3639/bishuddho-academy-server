@@ -1,7 +1,7 @@
 // src/auth/dto/login-response.dto.ts
 
 import { ApiProperty } from "@nestjs/swagger";
-import { UserRole } from "../decorators/roles.decorator";
+import { UserRole } from "../../../database/schemas/user.schema";
 
 class UserPayloadDto {
     @ApiProperty({ example: "60d0fe4f5311236168a109ca" })

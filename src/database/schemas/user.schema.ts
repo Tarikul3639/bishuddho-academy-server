@@ -1,5 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+export enum UserRole {
+    STUDENT = 'student',
+    ADMIN = 'admin',
+}
+
 // user.schema.ts
 @Schema({ timestamps: true })
 export class User {
@@ -14,8 +19,8 @@ export class User {
     @Prop({ required: true, select: false })
     password!: string;
 
-    @Prop({ enum: ['student', 'admin'], default: 'student' })
-    role!: string;
+    @Prop({ enum: UserRole, default: UserRole.STUDENT })
+    role!: UserRole;
 
     @Prop({ default: 'active' }) // "active" | "blocked"
     status!: string;

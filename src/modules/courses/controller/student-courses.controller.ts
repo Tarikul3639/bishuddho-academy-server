@@ -1,5 +1,6 @@
 import {
     Controller,
+    Delete,
     Get,
     Param,
     Req,
@@ -18,6 +19,7 @@ import { StudentMyCourseResponseDto } from "../dto/student-my-course-response.dt
 import { StudentFindMyCoursesService } from "../service/student-find-my-courses.service";
 import { StudentCourseDetailsResponseDto } from "../dto/student-course-details-response.dto";
 import { StudentFindCourseDetailsService } from "../service/student-find-course-details.service";
+import { StudentCancelEnrollmentService } from "../service/student-cancel-enrollment.service";
 
 @ApiTags("Student Courses")
 @Controller("student/courses")
@@ -26,6 +28,7 @@ export class StudentCoursesController {
     constructor(
         private readonly studentFindMyCoursesService: StudentFindMyCoursesService,
         private readonly studentFindCourseDetailsService: StudentFindCourseDetailsService,
+        private readonly studentCancelEnrollmentService: StudentCancelEnrollmentService,
     ) { }
 
     @Get()
@@ -54,6 +57,23 @@ export class StudentCoursesController {
     ): Promise<StudentCourseDetailsResponseDto> {
         return this.studentFindCourseDetailsService.findById(
             req.user.userId,
+            courseId,
+        );
+    }
+
+    @Delete(":courseId")
+    @ApiOperation({
+        summary: "Cancel course enrollment",
+    })
+    async cancelEnrollment(
+        @CurrentUser("userId")
+        userId: string,
+
+        @Param("courseId")
+        courseId: string,
+    ) {
+        return this.studentCancelEnrollmentService.cancelEnrollment(
+            userId,
             courseId,
         );
     }

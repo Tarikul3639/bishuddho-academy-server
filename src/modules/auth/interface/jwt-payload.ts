@@ -1,4 +1,4 @@
-import { UserRole } from "../decorators/roles.decorator";
+import { UserRole } from "../../../database/schemas/user.schema";
 
 export interface JwtPayload {
     userId: string;

@@ -8,7 +8,7 @@ import {
     Enrollment,
     EnrollmentStatus,
 } from "../../../database/schemas/enrollment.schema";
-import { Payment } from "../../../database/schemas/payment.schema";
+import { Payment, PaymentStatus } from "../../../database/schemas/payment.schema";
 import { Course } from "../../../database/schemas/course.schema";
 import { StudentCourseDetailsResponseDto } from "../dto/student-course-details-response.dto";
 
@@ -33,6 +33,9 @@ export class StudentFindCourseDetailsService {
             .findOne({
                 userId: new Types.ObjectId(userId),
                 courseId: new Types.ObjectId(courseId),
+                status: {
+                    $in: [EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED],
+                },
             })
             .lean()
             .exec();
@@ -44,6 +47,9 @@ export class StudentFindCourseDetailsService {
         const payment = await this.paymentModel
             .findOne({
                 enrollmentId: enrollment._id,
+                status: {
+                    $in: [PaymentStatus.VERIFIED],
+                },
             })
             .lean()
             .exec();
@@ -99,8 +105,6 @@ export class StudentFindCourseDetailsService {
             startDate: course.startDate,
 
             includes: course.includes || [],
-
-            currentSession: enrollment.currentSession,
             status: enrollment.status,
 
             payment: {

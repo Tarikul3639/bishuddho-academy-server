@@ -20,12 +20,10 @@ import { PublicFindCoursesService } from "./service/public-find-courses.service"
 import { StudentFindMyCoursesService } from "./service/student-find-my-courses.service";
 import { StudentFindCourseDetailsService } from "./service/student-find-course-details.service";
 
-import { AdminVerifyPaymentService } from "./service/admin-verify-payment.service";
-import { AdminRejectPaymentService } from "./service/admin-reject-payment.service";
-
 import { AdminCoursesController } from './controller/admin-courses.controller';
 import { PublicCoursesController } from './controller/public-courses.controller';
 import { StudentCoursesController } from './controller/student-courses.controller';
+import { StudentCancelEnrollmentService } from './service/student-cancel-enrollment.service';
 
 @Module({
     imports: [
@@ -51,15 +49,13 @@ import { StudentCoursesController } from './controller/student-courses.controlle
         AdminFindAllCoursesService,
         AdminFindCourseDetailsService,
         AdminUpdateCourseService,
-
-        AdminVerifyPaymentService,
-        AdminRejectPaymentService,
         
         PublicFindCoursesService,
         PublicFindCourseDetailsService,
 
         StudentFindMyCoursesService,
         StudentFindCourseDetailsService,
+        StudentCancelEnrollmentService,
     ],
 })
 export class CoursesModule { }

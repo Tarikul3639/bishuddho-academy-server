@@ -46,7 +46,6 @@ export class StudentCourseDetailsResponseDto {
   location!: string;
   startDate!: Date;
   includes!: string[];
-  currentSession!: number;
   status!: EnrollmentStatus;
   payment!: StudentCoursePaymentDto;
   modules!: StudentCourseModuleDto[];
