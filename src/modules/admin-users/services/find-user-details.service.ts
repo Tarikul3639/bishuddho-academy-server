@@ -4,7 +4,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 
-import { User, UserRole } from "../../../database/schemas/user.schema";
+import { User, UserRole, UserStatus } from "../../../database/schemas/user.schema";
 import { Enrollment, EnrollmentStatus } from "../../../database/schemas/enrollment.schema";
 import { Course } from "../../../database/schemas/course.schema";
 import { UserDetailDto } from "../dto/admin-users-response.dto";
@@ -36,14 +36,14 @@ export class FindUserDetailsService {
         const coursesCount = enrollments.length;
 
         return {
-            id: user._id.toString() || "",
+            userId: user._id.toString() || "",
             name: user.name || "",
             email: user.email || "",
             studentId: user.studentId || undefined,
             phone: user.phone || undefined,
             avatarUrl: user.avatarUrl || undefined,
             role: user.role || UserRole.STUDENT,
-            status: user.status || "active",
+            status: user.status || UserStatus.ACTIVE,
             joinedDate: user.createdAt
                 ? new Date(user.createdAt).toLocaleDateString("en-US", {
                       month: "short",

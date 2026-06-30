@@ -20,18 +20,20 @@ export class ResetUserPasswordService {
             throw new NotFoundException("User not found");
         }
 
-        // Generate a temporary password
-        const tempPassword = Math.random().toString(36).slice(-10);
+        // // Generate a temporary password
+        // const tempPassword = Math.random().toString(36).slice(-10);
 
-        // Use the existing auth service's pattern for password hashing
-        const bcrypt = await import("bcrypt");
-        const hashedPassword = await bcrypt.hash(tempPassword, 10);
+        // // Use the existing auth service's pattern for password hashing
+        // const bcrypt = await import("bcrypt");
+        // const hashedPassword = await bcrypt.hash(tempPassword, 10);
 
-        user.password = hashedPassword;
-        await user.save();
+        // user.password = hashedPassword;
+        // await user.save();
 
         // In production, this would send an email with the temp password
         // For now, we return success — admin communicates the password offline
+
+        //TODO: Will implement email service to send the temporary password to the user in production.
 
         return {
             success: true,

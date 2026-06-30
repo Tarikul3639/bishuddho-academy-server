@@ -4,7 +4,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 
-import { User, UserRole } from "../../../database/schemas/user.schema";
+import { User, UserRole, UserStatus } from "../../../database/schemas/user.schema";
 import { Enrollment } from "../../../database/schemas/enrollment.schema";
 import { UserSummaryDto, UserSummaryResponseDto } from "../dto/admin-users-response.dto";
 
@@ -72,7 +72,7 @@ export class FindAllUsersService {
         const usersData: UserSummaryDto[] = users.map((user) => {
             const uid = user._id.toString();
             return {
-                id: uid,
+                userId: uid,
                 name: user.name,
                 email: user.email,
                 studentId: user.studentId || "—",
@@ -90,7 +90,7 @@ export class FindAllUsersService {
                           year: "numeric",
                       })
                     : "—",
-                status: user.status || "active",
+                status: user.status || UserStatus.ACTIVE,
                 coursesCount: countByCourse.get(uid) || 0,
                 lastPurchase: lastPurchaseByUser.get(uid) || "None",
             };
@@ -99,8 +99,8 @@ export class FindAllUsersService {
         return {
             users: usersData,
             total: usersData.length,
-            active: usersData.filter((u) => u.status === "active").length,
-            blocked: usersData.filter((u) => u.status === "blocked").length,
+            active: usersData.filter((u) => u.status === UserStatus.ACTIVE).length,
+            blocked: usersData.filter((u) => u.status === UserStatus.BLOCKED).length,
             newUsersCount: users.filter(
                 (u) => u.createdAt && new Date(u.createdAt) >= monthStart,
             ).length,

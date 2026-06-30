@@ -1,8 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { UserRole, UserStatus } from '../../../database/schemas/user.schema';
 
 export class UserSummaryDto {
     @ApiProperty()
-    id!: string;
+    userId!: string;
 
     @ApiProperty()
     name!: string;
@@ -19,8 +20,8 @@ export class UserSummaryDto {
     @ApiProperty()
     lastLogin!: string;
 
-    @ApiProperty({ enum: ['active', 'blocked'] })
-    status!: string;
+    @ApiProperty({ enum: [UserStatus.ACTIVE, UserStatus.BLOCKED] })
+    status!: UserStatus;
 
     @ApiProperty()
     coursesCount!: number;
@@ -48,7 +49,7 @@ export class UserSummaryResponseDto {
 
 export class UserDetailDto {
     @ApiProperty()
-    id!: string;
+    userId!: string;
 
     @ApiProperty()
     name!: string;
@@ -65,11 +66,11 @@ export class UserDetailDto {
     @ApiPropertyOptional()
     avatarUrl?: string;
 
-    @ApiProperty({ enum: ['student', 'admin'] })
-    role!: string;
+    @ApiProperty({ enum: [UserRole.STUDENT, UserRole.ADMIN] })
+    role!: UserRole;
 
-    @ApiProperty({ enum: ['active', 'blocked'] })
-    status!: string;
+    @ApiProperty({ enum: [UserStatus.ACTIVE, UserStatus.BLOCKED] })
+    status!: UserStatus;
 
     @ApiPropertyOptional()
     joinedDate?: string;

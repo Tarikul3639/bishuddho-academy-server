@@ -1,5 +1,6 @@
-import { IsMongoId, IsOptional, IsString, IsEnum } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsString, IsEnum } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { UserStatus } from '../../../database/schemas/user.schema';
 
 export class FindUsersQueryDto {
     @ApiPropertyOptional()
@@ -7,7 +8,7 @@ export class FindUsersQueryDto {
     @IsString()
     search?: string;
 
-    @ApiPropertyOptional({ enum: ['active', 'blocked', ''] })
+    @ApiPropertyOptional({ enum: [UserStatus.ACTIVE, UserStatus.BLOCKED] })
     @IsOptional()
     @IsString()
     status?: string;
@@ -18,12 +19,17 @@ export class BlockUserDto {
     @IsOptional()
     @IsString()
     reason?: string;
+
+    @ApiPropertyOptional({ enum: [UserStatus.ACTIVE, UserStatus.BLOCKED] })
+    @IsOptional()
+    @IsEnum([UserStatus.ACTIVE, UserStatus.BLOCKED])
+    status?: UserStatus;
 }
 
 export class ToggleUserStatusDto {
-    @ApiPropertyOptional({ enum: ['active', 'blocked'] })
-    @IsEnum(['active', 'blocked'])
-    status!: 'active' | 'blocked';
+    @ApiPropertyOptional({ enum: [UserStatus.ACTIVE, UserStatus.BLOCKED] })
+    @IsEnum([UserStatus.ACTIVE, UserStatus.BLOCKED])
+    status!: UserStatus;
 
     @ApiPropertyOptional()
     @IsOptional()

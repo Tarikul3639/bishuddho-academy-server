@@ -5,6 +5,11 @@ export enum UserRole {
     ADMIN = 'admin',
 }
 
+export enum UserStatus {
+    ACTIVE = 'active',
+    BLOCKED = 'blocked',
+}
+
 // user.schema.ts
 @Schema({ timestamps: true })
 export class User {
@@ -22,8 +27,8 @@ export class User {
     @Prop({ enum: UserRole, default: UserRole.STUDENT })
     role!: UserRole;
 
-    @Prop({ default: 'active' }) // "active" | "blocked"
-    status!: string;
+    @Prop({ enum: UserStatus, default: UserStatus.ACTIVE })
+    status!: UserStatus;
 
     @Prop()
     avatarUrl?: string;
