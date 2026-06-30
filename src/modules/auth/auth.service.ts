@@ -4,8 +4,7 @@ import { Model, Types } from "mongoose";
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 
-import { User } from "../../database/schemas/user.schema";
-import { UserRole } from "../../database/schemas/user.schema";
+import { User, UserRole } from "../../database/schemas/user.schema";
 import { Enrollment, EnrollmentStatus } from "src/database/schemas/enrollment.schema";
 import { LoginDto } from "./dto/login.dto";
 import { LoginResponseDto } from "./dto/login-response.dto";
@@ -69,7 +68,9 @@ export class AuthService {
             userId: user._id.toJSON(),
             name: user.name,
             email: user.email,
+            phone: user.phone,
             role: user.role as UserRole,
+            status: user.status,
             enrolledCourses: enrolledCoursesCount, // Only include for students
             createdAt: user.createdAt.toDateString(),
             avatarUrl: user.avatarUrl, // Include avatar URL if available
@@ -88,7 +89,9 @@ export class AuthService {
                 userId: user._id.toString(),
                 name: user.name,
                 email: user.email,
+                phone: user.phone,
                 role: user.role as UserRole,
+                status: user.status,
                 avatarUrl: user.avatarUrl,
                 createdAt: user.createdAt.toDateString(),
             },
@@ -125,9 +128,11 @@ export class AuthService {
                 user._id.toString(),
             name: user.name,
             email: user.email,
+            phone: user.phone,
             role: user.role as UserRole,
             avatarUrl: user.avatarUrl,
             enrolledCourses: enrolledCoursesCount,
+            status: user.status,
             createdAt: user.createdAt.toDateString(),
         };
     }
@@ -140,37 +145,6 @@ export class AuthService {
             success: true,
             message:
                 "Logout successful",
-        };
-    }
-
-    /* ─────────────────────────────
-       Change Password
-    ───────────────────────────── */
-    async changePassword(
-        userId: string,
-        currentPassword: string,
-        newPassword: string,
-    ): Promise<{ success: boolean; message: string }> {
-        const userObjectId = new Types.ObjectId(userId);
-        const user = await this.userModel.findById(userObjectId).select("+password").exec();
-
-        if (!user) {
-            throw new UnauthorizedException("User not found");
-        }
-
-        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
-
-        if (!isCurrentPasswordValid) {
-            throw new UnauthorizedException("Current password is incorrect");
-        }
-
-        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-        user.password = hashedNewPassword;
-        await user.save();
-
-        return {
-            success: true,
-            message: "Password changed successfully",
         };
     }
 }

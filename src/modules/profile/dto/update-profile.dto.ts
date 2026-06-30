@@ -1,22 +1,10 @@
-// src/users/dto/update-profile.dto.ts
-
-import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import {
-    IsDateString,
-    IsEnum,
-    IsMobilePhone,
-    IsOptional,
-    IsString,
-    IsUrl,
-    Matches,
-} from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsDateString, IsEnum, IsOptional, IsString, IsUrl, Matches } from 'class-validator';
 
 const BD_PHONE_REGEX = /^01\d{9}$/;
 const BD_PHONE_MESSAGE = 'Enter a valid Bangladeshi phone number (e.g. 01XXXXXXXXX).';
 
-export class ProfileDto {
-    // ─── PERSONAL INFO ───────────────────────────────────────────────────────
-
+export class UpdateProfileDto {
     @ApiPropertyOptional({ description: "User's full name", example: 'Tarikul Islam' })
     @IsOptional()
     @IsString()
@@ -37,29 +25,17 @@ export class ProfileDto {
     @IsDateString({}, { message: 'Date of birth must be a valid ISO date string (YYYY-MM-DD).' })
     dateOfBirth?: string;
 
-    @ApiPropertyOptional({
-        description: "User's gender",
-        enum: ['Male', 'Female', 'Other', 'Prefer not to say'],
-        example: 'Male',
-    })
+    @ApiPropertyOptional({ enum: ['Male', 'Female', 'Other', 'Prefer not to say'], example: 'Male' })
     @IsOptional()
     @IsEnum(['Male', 'Female', 'Other', 'Prefer not to say'], { message: 'Invalid gender value.' })
     gender?: string;
 
-    @ApiPropertyOptional({
-        description: "User's blood group",
-        enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
-        example: 'B+',
-    })
+    @ApiPropertyOptional({ enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], example: 'B+' })
     @IsOptional()
     @IsEnum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], { message: 'Invalid blood group.' })
     bloodGroup?: string;
 
-    @ApiPropertyOptional({
-        description: "User's religion",
-        enum: ['Islam', 'Hinduism', 'Christianity', 'Buddhism', 'Other'],
-        example: 'Islam',
-    })
+    @ApiPropertyOptional({ enum: ['Islam', 'Hinduism', 'Christianity', 'Buddhism', 'Other'], example: 'Islam' })
     @IsOptional()
     @IsEnum(['Islam', 'Hinduism', 'Christianity', 'Buddhism', 'Other'], { message: 'Invalid religion value.' })
     religion?: string;
@@ -68,8 +44,6 @@ export class ProfileDto {
     @IsOptional()
     @IsString()
     nationality?: string;
-
-    // ─── IDENTITY DOCUMENTS ──────────────────────────────────────────────────
 
     @ApiPropertyOptional({ description: 'National ID number', example: '1234567890123' })
     @IsOptional()
@@ -85,8 +59,6 @@ export class ProfileDto {
     @IsOptional()
     @IsString()
     passportNumber?: string;
-
-    // ─── ACADEMIC INFO ───────────────────────────────────────────────────────
 
     @ApiPropertyOptional({ description: 'Academic roll number', example: '2021331039' })
     @IsOptional()
@@ -128,8 +100,6 @@ export class ProfileDto {
     @IsDateString({}, { message: 'Admission date must be a valid ISO date string (YYYY-MM-DD).' })
     admissionDate?: string;
 
-    // ─── FAMILY & GUARDIAN ───────────────────────────────────────────────────
-
     @ApiPropertyOptional({ description: "Father's full name", example: 'Mohammad Islam' })
     @IsOptional()
     @IsString()
@@ -155,8 +125,6 @@ export class ProfileDto {
     @IsString()
     guardianOccupation?: string;
 
-    // ─── EMERGENCY CONTACT ───────────────────────────────────────────────────
-
     @ApiPropertyOptional({ description: 'Emergency contact full name', example: 'Mohammad Islam' })
     @IsOptional()
     @IsString()
@@ -167,16 +135,10 @@ export class ProfileDto {
     @Matches(BD_PHONE_REGEX, { message: BD_PHONE_MESSAGE })
     emergencyContactNumber?: string;
 
-    @ApiPropertyOptional({
-        description: 'Relationship with the emergency contact',
-        enum: ['Father', 'Mother', 'Sibling', 'Spouse', 'Friend', 'Other'],
-        example: 'Father',
-    })
+    @ApiPropertyOptional({ enum: ['Father', 'Mother', 'Sibling', 'Spouse', 'Friend', 'Other'], example: 'Father' })
     @IsOptional()
     @IsEnum(['Father', 'Mother', 'Sibling', 'Spouse', 'Friend', 'Other'], { message: 'Invalid relationship value.' })
     relationship?: string;
-
-    // ─── ADDRESS ─────────────────────────────────────────────────────────────
 
     @ApiPropertyOptional({ description: 'Current residential address', example: 'House 12, Road 5, Kafrul, Dhaka' })
     @IsOptional()
@@ -188,15 +150,8 @@ export class ProfileDto {
     @IsString()
     permanentAddress?: string;
 
-    // ─── AVATAR ──────────────────────────────────────────────────────────────
-
-    @ApiPropertyOptional({
-        description: 'Direct URL to the profile avatar image',
-        example: 'https://example.com/avatars/tarikul.jpg',
-    })
+    @ApiPropertyOptional({ description: 'Direct URL to the profile avatar image', example: 'https://example.com/avatars/tarikul.jpg' })
     @IsOptional()
     @IsUrl({}, { message: 'Avatar URL must be a valid URL.' })
     avatarUrl?: string;
 }
-
-export class UpdateProfileDto extends PartialType(ProfileDto) {}

@@ -8,9 +8,11 @@ import { DatabaseModule } from './database/database.module';
 import { CoursesModule } from './modules/courses/courses.module';
 import { PurchasesModule } from './modules/purchases/purchases.module';
 import { AdminUsersModule } from './modules/admin-users/admin-users.module';
+import { BlockedUserGuard } from './modules/profile/guards/blocked-user.guard';
 
 // _-_-_-_ Auth _-_-_-
 import { AuthModule } from './modules/auth/auth.module';
+import { ProfileModule } from './modules/profile/profile.module';
 
 // _-_-_-_ Seed _-_-_-.
 import { SeedModule } from './seeds/seed.module';
@@ -34,6 +36,7 @@ import { SeedModule } from './seeds/seed.module';
 
     DatabaseModule,
     AuthModule,
+    ProfileModule,
     CoursesModule,
     PurchasesModule,
     AdminUsersModule,
@@ -48,6 +51,11 @@ import { SeedModule } from './seeds/seed.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    // Global blocked user guard
+    {
+      provide: APP_GUARD,
+      useClass: BlockedUserGuard,
     },
   ],
 })

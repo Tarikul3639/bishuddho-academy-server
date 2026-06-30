@@ -2,7 +2,6 @@ import {
     Body,
     Controller,
     Get,
-    Patch,
     Post,
     Res,
     UseGuards,
@@ -10,22 +9,19 @@ import {
 
 import { ConfigService } from '@nestjs/config';
 
-import { ApiBody, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import type { Response } from 'express';
 
 import ms, { type StringValue } from 'ms';
 
 import { AuthService } from './auth.service';
-import { UsersService } from './users.service';
 
 import { LoginDto } from './dto/login.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { UpdateProfileDto } from './dto/profile-update.dto';
-import { ProfileResponseDto } from './dto/profile-response.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -33,7 +29,6 @@ export class AuthController {
     constructor(
         private readonly authService: AuthService,
         private readonly configService: ConfigService,
-        private readonly usersService: UsersService,
     ) { }
 
     /* ─────────────────────────────
@@ -112,53 +107,5 @@ export class AuthController {
     })
     async me(@CurrentUser('userId') userId: string) {
         return this.authService.findUserById(userId);
-    }
-
-    /* ─────────────────────────────
-         PASSWORD CHANGE
-      ───────────────────────────── */
-
-    @Patch('password')
-    @UseGuards(JwtAuthGuard)
-    async changePassword(
-        @CurrentUser('userId')
-        userId: string,
-
-        @Body()
-        body: {
-            current: string;
-            next: string;
-        },
-    ) {
-        return this.authService.changePassword(userId, body.current, body.next);
-    }
-
-    /* ─────────────────────────────
-         PROFILE RETRIEVAL
-      ───────────────────────────── */
-
-    @Get('profile')
-    @UseGuards(JwtAuthGuard)
-    @ApiOkResponse({ type: ProfileResponseDto })
-    async getProfile(
-        @CurrentUser('userId') userId: string,
-    ): Promise<ProfileResponseDto> {
-        return this.usersService.getProfile(userId);
-    }
-
-    /* ─────────────────────────────
-         PROFILE UPDATE
-      ───────────────────────────── */
-
-    @Patch('profile')
-    @UseGuards(JwtAuthGuard)
-    @ApiOperation({ summary: 'Update the authenticated user profile' })
-    @ApiOkResponse({ description: 'Profile updated successfully.' })
-    async updateProfile(
-        @CurrentUser('userId') userId: string,
-        @Body() dto: UpdateProfileDto,
-    ): Promise<{ message: string }> {
-        await this.usersService.updateProfile(userId, dto);
-        return { message: 'Profile updated successfully.' };
     }
 }

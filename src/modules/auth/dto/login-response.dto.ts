@@ -13,8 +13,14 @@ class UserPayloadDto {
     @ApiProperty({ example: "tarikul@example.com" })
     email!: string;
 
+    @ApiProperty({ example: "01712345678", required: false })
+    phone?: string;
+
     @ApiProperty({ example: "student" })
     role!: UserRole;
+
+    @ApiProperty({ example: "active", required: false })
+    status?: string;
 
     @ApiProperty({ example: "https://example.com/avatar.png", required: false })
     avatarUrl?: string;

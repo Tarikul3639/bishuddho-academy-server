@@ -6,7 +6,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UsersService } from './users.service';
 import { User, UserSchema } from '../../database/schemas/user.schema';
 import {
     Enrollment,
@@ -35,7 +34,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService, UsersService, JwtAuthGuard],
+    providers: [AuthService, JwtAuthGuard],
     exports: [JwtAuthGuard],
 })
 export class AuthModule { }

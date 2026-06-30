@@ -1,9 +1,8 @@
-// src/users/dto/profile-response.dto.ts
-
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ProfileResponseDto {
-    // ─── PERSONAL INFO ───────────────────────────────────────────────────────
+    @ApiProperty({ example: '64f1a2b3c4d5e6f7a8b9c0d1' })
+    userId!: string;
 
     @ApiProperty({ example: 'Tarikul Islam' })
     name!: string;
@@ -32,8 +31,6 @@ export class ProfileResponseDto {
     @ApiPropertyOptional({ example: 'Bangladeshi' })
     nationality?: string;
 
-    // ─── IDENTITY DOCUMENTS ──────────────────────────────────────────────────
-
     @ApiPropertyOptional({ example: '1234567890123' })
     nidNumber?: string;
 
@@ -43,7 +40,29 @@ export class ProfileResponseDto {
     @ApiPropertyOptional({ example: 'AB1234567' })
     passportNumber?: string;
 
-    // ─── FAMILY & GUARDIAN ───────────────────────────────────────────────────
+    @ApiPropertyOptional({ example: '2021331039' })
+    rollNumber?: string;
+
+    @ApiPropertyOptional({ example: '2021331039' })
+    registrationNumber?: string;
+
+    @ApiPropertyOptional({ example: '2021-22' })
+    session?: string;
+
+    @ApiPropertyOptional({ example: 'Computer Science & Engineering' })
+    department?: string;
+
+    @ApiPropertyOptional({ example: 'B.Sc. in CSE' })
+    program?: string;
+
+    @ApiPropertyOptional({ example: '8th' })
+    semester?: string;
+
+    @ApiPropertyOptional({ example: '51' })
+    batch?: string;
+
+    @ApiPropertyOptional({ example: '2021-01-10' })
+    admissionDate?: string;
 
     @ApiPropertyOptional({ example: 'Mohammad Islam' })
     fatherName?: string;
@@ -60,8 +79,6 @@ export class ProfileResponseDto {
     @ApiPropertyOptional({ example: 'Business' })
     guardianOccupation?: string;
 
-    // ─── EMERGENCY CONTACT ───────────────────────────────────────────────────
-
     @ApiPropertyOptional({ example: 'Mohammad Islam' })
     emergencyContactName?: string;
 
@@ -71,16 +88,24 @@ export class ProfileResponseDto {
     @ApiPropertyOptional({ enum: ['Father', 'Mother', 'Sibling', 'Spouse', 'Friend', 'Other'], example: 'Father' })
     relationship?: string;
 
-    // ─── ADDRESS ─────────────────────────────────────────────────────────────
-
     @ApiPropertyOptional({ example: 'House 12, Road 5, Kafrul, Dhaka' })
     presentAddress?: string;
 
     @ApiPropertyOptional({ example: 'Village: Char Fasson, Bhola, Barisal' })
     permanentAddress?: string;
 
-    // ─── AVATAR ──────────────────────────────────────────────────────────────
-
     @ApiPropertyOptional({ example: 'https://example.com/avatars/tarikul.jpg' })
     avatarUrl?: string;
+
+    @ApiPropertyOptional({ example: 3 })
+    enrolledCourses?: number;
+
+    @ApiProperty({ example: '2024-01-15T10:30:00.000Z' })
+    createdAt!: string;
+
+    @ApiProperty({ example: 'student' })
+    role!: string;
+
+    @ApiProperty({ example: 'active' })
+    status!: string;
 }

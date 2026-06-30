@@ -4,7 +4,9 @@ export interface JwtPayload {
     userId: string;
     name: string;
     email: string;
+    phone?: string;
     role: UserRole;
+    status: string;
 
     enrolledCourses?: number;
     createdAt: string;
