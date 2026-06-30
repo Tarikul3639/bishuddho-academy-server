@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { envValidationSchema } from './config/env.validation';
 import { DatabaseModule } from './database/database.module';
@@ -16,6 +17,7 @@ import { ProfileModule } from './modules/profile/profile.module';
 
 // _-_-_-_ Seed _-_-_-.
 import { SeedModule } from './seeds/seed.module';
+import { User, UserSchema } from './database/schemas/user.schema';
 
 @Module({
   imports: [
@@ -24,6 +26,10 @@ import { SeedModule } from './seeds/seed.module';
       envFilePath: ['.env.local', '.env.development', '.env'],
       validationSchema: envValidationSchema,
     }),
+
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+    ]),
 
     ThrottlerModule.forRoot({
       throttlers: [

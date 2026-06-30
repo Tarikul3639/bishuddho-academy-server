@@ -11,13 +11,21 @@ import { AuthModule } from '../auth/auth.module';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([
-            { name: User.name, schema: UserSchema },
-        ]),
+        MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
         AuthModule,
     ],
     controllers: [ProfileController],
-    providers: [GetProfileService, UpdateProfileService, ChangePasswordService, BlockedUserGuard],
-    exports: [GetProfileService, UpdateProfileService, ChangePasswordService, BlockedUserGuard],
+    providers: [
+        GetProfileService,
+        UpdateProfileService,
+        ChangePasswordService,
+        BlockedUserGuard,
+    ],
+    exports: [
+        GetProfileService,
+        UpdateProfileService,
+        ChangePasswordService,
+        BlockedUserGuard,
+    ],
 })
 export class ProfileModule { }
