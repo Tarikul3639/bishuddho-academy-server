@@ -9,6 +9,7 @@ import { DatabaseModule } from './database/database.module';
 import { CoursesModule } from './modules/courses/courses.module';
 import { PurchasesModule } from './modules/purchases/purchases.module';
 import { AdminUsersModule } from './modules/admin-users/admin-users.module';
+import { TeacherModule } from './modules/teacher/teacher.module';
 import { BlockedUserGuard } from './modules/profile/guards/blocked-user.guard';
 
 // _-_-_-_ Auth _-_-_-
@@ -46,6 +47,7 @@ import { User, UserSchema } from './database/schemas/user.schema';
     CoursesModule,
     PurchasesModule,
     AdminUsersModule,
+    TeacherModule,
 
     SeedModule,
   ],
