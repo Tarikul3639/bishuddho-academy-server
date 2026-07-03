@@ -27,7 +27,7 @@ import { UserRole, UserStatus } from "../../../database/schemas/user.schema";
 import { FindAllUsersService } from "../services/find-all-users.service";
 import { FindUserDetailsService } from "../services/find-user-details.service";
 import { ToggleUserBlockService } from "../services/toggle-user-block.service";
-import { ResetUserPasswordService } from "../services/reset-user-password.service";
+import { AdminInitiatePasswordResetService } from "../services/admin-initiate-password-reset.service";
 
 import {
     BlockUserDto,
@@ -46,7 +46,7 @@ export class AdminUsersController {
         private readonly findAllUsersService: FindAllUsersService,
         private readonly findUserDetailsService: FindUserDetailsService,
         private readonly toggleUserBlockService: ToggleUserBlockService,
-        private readonly resetUserPasswordService: ResetUserPasswordService,
+        private readonly adminInitiatePasswordResetService: AdminInitiatePasswordResetService,
     ) {}
 
     @Get()
@@ -160,7 +160,7 @@ export class AdminUsersController {
         @Body()
         dto: ResetPasswordDto,
     ) {
-        return this.resetUserPasswordService.resetPassword(
+        return this.adminInitiatePasswordResetService.resetPassword(
             userId,
         );
     }

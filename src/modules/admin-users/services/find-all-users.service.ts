@@ -75,7 +75,6 @@ export class FindAllUsersService {
                 userId: uid,
                 name: user.name,
                 email: user.email,
-                studentId: user.studentId || "—",
                 joinedDate: user.createdAt
                     ? new Date(user.createdAt).toLocaleDateString("en-US", {
                           month: "short",

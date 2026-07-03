@@ -14,8 +14,20 @@ import {
 import { type StringValue } from 'ms'; // Import the type from ms
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
+import { ResetPasswordController } from './controllers/reset-password.controller';
+import { ResetPasswordService } from './services/reset-password.service';
+
+import { ForgotPasswordController } from './controllers/forgot-password.controller';
+import { ForgotPasswordService } from './services/forgot-password.service';
+
+import { SignupController } from './controllers/signup.controller';
+import { SignupService } from './services/signup.service';
+
+import { CommonModule } from '../../common/common.module';
+
 @Module({
     imports: [
+        CommonModule,
         MongooseModule.forFeature([
             { name: User.name, schema: UserSchema },
             { name: Enrollment.name, schema: EnrollmentSchema },
@@ -33,8 +45,19 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
             }),
         }),
     ],
-    controllers: [AuthController],
-    providers: [AuthService, JwtAuthGuard],
+    controllers: [
+        AuthController,
+        ResetPasswordController,
+        ForgotPasswordController,
+        SignupController,
+    ],
+    providers: [
+        AuthService,
+        JwtAuthGuard,
+        ResetPasswordService,
+        ForgotPasswordService,
+        SignupService,
+    ],
     exports: [JwtAuthGuard],
 })
 export class AuthModule { }

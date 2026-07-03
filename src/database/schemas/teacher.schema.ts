@@ -47,6 +47,9 @@ export class Teacher {
   @Prop({ default: '' })
   profileImage!: string;
 
+  @Prop({ default: '' })
+  profileImagePublicId!: string;
+
   // Contact
   @Prop()
   email?: string;

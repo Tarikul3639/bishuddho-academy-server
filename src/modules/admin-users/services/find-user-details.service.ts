@@ -39,7 +39,6 @@ export class FindUserDetailsService {
             userId: user._id.toString() || "",
             name: user.name || "",
             email: user.email || "",
-            studentId: user.studentId || undefined,
             phone: user.phone || undefined,
             avatarUrl: user.avatarUrl || undefined,
             role: user.role || UserRole.STUDENT,

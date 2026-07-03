@@ -12,9 +12,6 @@ export class UserSummaryDto {
     email!: string;
 
     @ApiProperty()
-    studentId!: string;
-
-    @ApiProperty()
     joinedDate!: string;
 
     @ApiProperty()

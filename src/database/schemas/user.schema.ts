@@ -33,11 +33,27 @@ export class User {
     @Prop()
     avatarUrl?: string;
 
-    @Prop({ unique: true, sparse: true })
-    studentId?: string; // auto-generated: BA-2026-0001
-
     @Prop()
     lastLogin?: Date;
+
+    // ─── AUTH ───────────────────────────────────────────────────────────────────
+
+    @Prop({
+        default: false,
+    })
+    emailVerified!: boolean;
+
+    @Prop()
+    emailVerificationToken?: string;
+
+    @Prop()
+    emailVerificationExpires?: Date;
+
+    @Prop()
+    passwordResetToken?: string;
+
+    @Prop()
+    passwordResetExpires?: Date;
 
     // ─── PERSONAL INFO ───────────────────────────────────────────────────────
 

@@ -57,6 +57,9 @@ export class Course {
     @Prop({ default: "" })
     thumbnailUrl!: string;
 
+    @Prop({ default: "" })
+    thumbnailPublicId!: string;
+
     @Prop({ required: true })
     instructor!: string;
 

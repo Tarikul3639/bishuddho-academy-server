@@ -1,19 +1,29 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
-    IsString,
-    IsNumber,
+    ApiHideProperty,
+    ApiProperty,
+    ApiPropertyOptional,
+} from "@nestjs/swagger";
+
+import {
+    Type,
+    Transform,
+} from "class-transformer";
+
+import {
     IsArray,
-    IsOptional,
+    IsBoolean,
     IsDateString,
     IsEnum,
+    IsNumber,
+    IsOptional,
+    IsString,
     ValidateNested,
-    IsBoolean,
 } from "class-validator";
-import { Type } from "class-transformer";
 
 /* ─────────────────────────────
-   ENUM
+    ENUM
 ───────────────────────────── */
+
 export enum CourseStatus {
     ACTIVE = "active",
     UPCOMING = "upcoming",
@@ -21,8 +31,9 @@ export enum CourseStatus {
 }
 
 /* ─────────────────────────────
-   CLASS DTO
+    CLASS DTO
 ───────────────────────────── */
+
 export class CreateCourseClassDto {
     @ApiProperty()
     @IsString()
@@ -34,30 +45,37 @@ export class CreateCourseClassDto {
 
     @ApiPropertyOptional()
     @IsOptional()
+    @Transform(({ value }) => value === "true" || value === true)
     @IsBoolean()
     completed?: boolean;
 }
 
 /* ─────────────────────────────
-   MODULE DTO
+    MODULE DTO
 ───────────────────────────── */
+
 export class AdminCreateCourseModuleDto {
     @ApiProperty()
     @IsString()
     title!: string;
 
-    @ApiProperty({ type: [CreateCourseClassDto] })
+    @ApiProperty({
+        type: [CreateCourseClassDto],
+    })
     @IsArray()
-    @ValidateNested({ each: true })
+    @ValidateNested({
+        each: true,
+    })
     @Type(() => CreateCourseClassDto)
     classes!: CreateCourseClassDto[];
 }
 
 /* ─────────────────────────────
-   MAIN CREATE DTO (UPDATED)
+    MAIN DTO
 ───────────────────────────── */
+
 export class AdminCreateCourseDto {
-    @ApiProperty({ description: "The title of the course" })
+    @ApiProperty()
     @IsString()
     title!: string;
 
@@ -66,41 +84,45 @@ export class AdminCreateCourseDto {
     @IsString()
     tagline?: string;
 
-    @ApiProperty({ description: "Detailed description of course" })
+    @ApiProperty()
     @IsString()
     description!: string;
 
-    @ApiPropertyOptional()
+    @ApiHideProperty()
     @IsOptional()
     @IsString()
     thumbnailUrl?: string;
 
-    @ApiProperty({ description: "Instructor name" })
+    @ApiHideProperty()
+    @IsOptional()
+    @IsString()
+    thumbnailPublicId?: string;
+
+    @ApiProperty()
     @IsString()
     instructor!: string;
 
-    /* ── Schedule should stay simple string (or later convert to object) ── */
-    @ApiProperty({ description: "Class schedule (e.g. Mon-Wed-Fri 7PM)" })
+    @ApiProperty()
     @IsString()
     schedule!: string;
 
-    @ApiProperty({ description: "Class location / online info" })
+    @ApiProperty()
     @IsString()
     location!: string;
 
-    @ApiProperty({ example: "2026-07-01" })
+    @ApiProperty()
     @IsDateString()
     startDate!: Date;
 
-    @ApiProperty({ example: "3 Months" })
+    @ApiProperty()
     @IsString()
     duration!: string;
 
     @ApiProperty()
+    @Type(() => Number)
     @IsNumber()
     totalSeats!: number;
 
-    /* ── Pricing (ONLY source of truth) ── */
     @ApiProperty()
     @Type(() => Number)
     @IsNumber()
@@ -111,7 +133,6 @@ export class AdminCreateCourseDto {
     @IsNumber()
     originalPrice!: number;
 
-    /* ── Discount schedule (NO discount % stored) ── */
     @ApiPropertyOptional()
     @IsOptional()
     @IsDateString()
@@ -122,7 +143,6 @@ export class AdminCreateCourseDto {
     @IsDateString()
     discountEnds?: Date;
 
-    /* ── Status ── */
     @ApiPropertyOptional({
         enum: CourseStatus,
         default: CourseStatus.UPCOMING,
@@ -131,18 +151,33 @@ export class AdminCreateCourseDto {
     @IsEnum(CourseStatus)
     status?: CourseStatus;
 
-    /* ── Features ── */
-    @ApiPropertyOptional({ type: [String] })
+    @ApiPropertyOptional({
+        type: [String],
+    })
     @IsOptional()
+    @Transform(({ value }) => {
+        if (!value) return [];
+        if (Array.isArray(value)) return value;
+        return JSON.parse(value);
+    })
     @IsArray()
-    @IsString({ each: true })
+    @IsString({
+        each: true,
+    })
     includes?: string[];
 
-    /* ── Curriculum ── */
-    @ApiPropertyOptional({ type: [AdminCreateCourseModuleDto] })
+    @ApiPropertyOptional({
+        type: [AdminCreateCourseModuleDto],
+    })
     @IsOptional()
-    @IsArray()
-    @ValidateNested({ each: true })
+    @Transform(({ value }) => {
+        if (!value) return [];
+        if (Array.isArray(value)) return value;
+        return JSON.parse(value);
+    })
+    @ValidateNested({
+        each: true,
+    })
     @Type(() => AdminCreateCourseModuleDto)
     modules?: AdminCreateCourseModuleDto[];
 }

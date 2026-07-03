@@ -2,24 +2,15 @@
 
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Model } from "mongoose";
 
-import { Enrollment, EnrollmentStatus } from "../../../database/schemas/enrollment.schema";
-import { Payment, PaymentStatus } from "../../../database/schemas/payment.schema";
-import { Course } from "../../../database/schemas/course.schema";
-import { UpdatePurchaseStatusDto } from "../dto/update-purchase-status.dto";
+import { Payment } from "../../../database/schemas/payment.schema";
 
 @Injectable()
 export class AdminPurchasesService {
   constructor(
-    @InjectModel(Enrollment.name)
-    private readonly enrollmentModel: Model<Enrollment>,
-
     @InjectModel(Payment.name)
     private readonly paymentModel: Model<Payment>,
-
-    @InjectModel(Course.name)
-    private readonly courseModel: Model<Course>,
   ) {}
 
   async findAll(filter?: { status?: string; method?: string; courseId?: string }) {
@@ -119,43 +110,6 @@ export class AdminPurchasesService {
       rejectionReason: payment.rejectionReason,
       createdAt: payment.createdAt,
       updatedAt: payment.updatedAt,
-    };
-  }
-
-  async updateStatus(id: string, dto: UpdatePurchaseStatusDto, adminId?: string) {
-    const payment = await this.paymentModel.findById(id);
-    if (!payment) {
-      throw new NotFoundException("Purchase record not found");
-    }
-
-    const enrollment = await this.enrollmentModel.findById(payment.enrollmentId);
-    if (!enrollment) {
-      throw new NotFoundException("Enrollment not found");
-    }
-
-    payment.status = dto.status;
-
-    switch (dto.status) {
-      case PaymentStatus.VERIFIED:
-        payment.verifiedAt = new Date();
-        payment.verifiedBy = adminId ? new Types.ObjectId(adminId) : undefined;
-        payment.rejectionReason = undefined;
-        enrollment.status = EnrollmentStatus.ACTIVE;
-        break;
-
-      case PaymentStatus.REJECTED:
-        payment.verifiedAt = undefined;
-        payment.verifiedBy = undefined;
-        payment.rejectionReason = dto.rejectionReason;
-        enrollment.status = EnrollmentStatus.PENDING;
-        break;
-    }
-
-    await Promise.all([payment.save(), enrollment.save()]);
-
-    return {
-      success: true,
-      message: `Payment ${dto.status} successfully`,
     };
   }
 }

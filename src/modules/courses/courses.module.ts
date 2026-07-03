@@ -8,26 +8,39 @@ import {
 } from '../../database/schemas/enrollment.schema';
 import { Payment, PaymentSchema } from '../../database/schemas/payment.schema';
 import { Review, ReviewSchema } from 'src/database/schemas/review.schema';
-import { Certificate, CertificateSchema } from 'src/database/schemas/certificate.schema';
+import {
+    Certificate,
+    CertificateSchema,
+} from 'src/database/schemas/certificate.schema';
 
 import { AdminFindAllCoursesService } from './service/admin-find-all-courses.service';
 import { AdminCreateCourseService } from './service/admin-courses-create.service';
 import { AdminFindCourseDetailsService } from './service/admin-find-courses-details.service';
 import { AdminUpdateCourseService } from './service/admin-update-course.service';
 
-import { PublicFindCourseDetailsService } from "./service/public-find-course-details.service";
-import { PublicFindCoursesService } from "./service/public-find-courses.service";
+import { PublicFindCourseDetailsService } from './service/public-find-course-details.service';
+import { PublicFindCoursesService } from './service/public-find-courses.service';
 
-import { StudentFindMyCoursesService } from "./service/student-find-my-courses.service";
-import { StudentFindCourseDetailsService } from "./service/student-find-course-details.service";
+import { StudentFindMyCoursesService } from './service/student-find-my-courses.service';
+import { StudentFindCourseDetailsService } from './service/student-find-course-details.service';
 
-import { AdminCoursesController } from './controller/admin-courses.controller';
 import { PublicCoursesController } from './controller/public-courses.controller';
 import { StudentCoursesController } from './controller/student-courses.controller';
 import { StudentCancelEnrollmentService } from './service/student-cancel-enrollment.service';
 
+import { AdminDeleteCourseService } from './service/admin-delete-course.service';
+import { DeleteCourseController } from './controller/delete-course.controller';
+
+import { CreateCourseController } from './controller/create-course.controller';
+import { UpdateCourseController } from './controller/update-course.controller';
+import { GetCourseDetailsController } from './controller/get-course-details.controller';
+import { GetAllCoursesController } from './controller/get-all-courses.controller';
+
+import { CommonModule } from '../../common/common.module';
+
 @Module({
     imports: [
+        CommonModule,
         MongooseModule.forFeature([
             { name: Course.name, schema: CourseSchema },
             { name: Enrollment.name, schema: EnrollmentSchema },
@@ -45,19 +58,29 @@ import { StudentCancelEnrollmentService } from './service/student-cancel-enrollm
             limits: { fileSize: 5 * 1024 * 1024 },
         }),
     ],
-    controllers: [AdminCoursesController, PublicCoursesController, StudentCoursesController],
+    controllers: [
+        PublicCoursesController,
+        StudentCoursesController,
+        CreateCourseController,
+        UpdateCourseController,
+        GetCourseDetailsController,
+        GetAllCoursesController,
+        DeleteCourseController,
+    ],
     providers: [
         AdminCreateCourseService,
         AdminFindAllCoursesService,
         AdminFindCourseDetailsService,
         AdminUpdateCourseService,
-        
+
         PublicFindCoursesService,
         PublicFindCourseDetailsService,
 
         StudentFindMyCoursesService,
         StudentFindCourseDetailsService,
         StudentCancelEnrollmentService,
+
+        AdminDeleteCourseService,
     ],
 })
 export class CoursesModule { }

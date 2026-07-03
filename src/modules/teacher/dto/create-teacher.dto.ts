@@ -1,6 +1,15 @@
-// create-teacher.dto.ts
+import {
+    ApiHideProperty,
+    ApiProperty,
+    ApiPropertyOptional,
+} from "@nestjs/swagger";
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+    plainToInstance,
+    Transform,
+    Type,
+} from "class-transformer";
+
 import {
     IsArray,
     IsBoolean,
@@ -10,11 +19,10 @@ import {
     IsString,
     Min,
     ValidateNested,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+} from "class-validator";
 
 /* ─────────────────────────────
-   SUB DTOs
+   SUB DTO
 ───────────────────────────── */
 
 export class SocialLinksDto {
@@ -44,7 +52,7 @@ export class SocialLinksDto {
 ───────────────────────────── */
 
 export class CreateTeacherDto {
-    /* ───────── BASIC INFORMATION ───────── */
+    /* BASIC */
 
     @ApiProperty()
     @IsString()
@@ -68,7 +76,17 @@ export class CreateTeacherDto {
     @IsString()
     biography?: string;
 
-    /* ───────── CONTACT ───────── */
+    @ApiHideProperty()
+    @IsOptional()
+    @IsString()
+    profileImage?: string;
+
+    @ApiHideProperty()
+    @IsOptional()
+    @IsString()
+    profileImagePublicId?: string;
+
+    /* CONTACT */
 
     @ApiPropertyOptional()
     @IsOptional()
@@ -80,42 +98,67 @@ export class CreateTeacherDto {
     @IsString()
     phone?: string;
 
-    /* ───────── PROFESSIONAL ───────── */
+    /* PROFESSIONAL */
 
     @ApiPropertyOptional()
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     @Min(0)
     yearsOfExperience?: number;
 
-    @ApiPropertyOptional({ type: [String] })
+    @ApiPropertyOptional({
+        type: [String],
+    })
     @IsOptional()
+    @Transform(({ value }) => {
+        if (!value) {
+            return [];
+        }
+
+        if (Array.isArray(value)) {
+            return value;
+        }
+
+        return JSON.parse(value);
+    })
     @IsArray()
     @IsString({ each: true })
     skills?: string[];
 
-    /* ───────── SOCIAL LINKS ───────── */
-
-    @ApiPropertyOptional({ type: SocialLinksDto })
+    /* SOCIAL */
+    @ApiPropertyOptional({
+        type: SocialLinksDto,
+    })
     @IsOptional()
+    @Transform(({ value }) => {
+        if (!value) {
+            return undefined;
+        }
+
+        const parsed = typeof value === "string" ? JSON.parse(value) : value;
+        return plainToInstance(SocialLinksDto, parsed);
+    })
     @ValidateNested()
     @Type(() => SocialLinksDto)
     socialLinks?: SocialLinksDto;
 
-    /* ───────── DISPLAY SETTINGS ───────── */
-
+    /* DISPLAY */
     @ApiPropertyOptional()
     @IsOptional()
+    @Transform(({ value }) => value === "true" || value === true)
     @IsBoolean()
     isActive?: boolean;
 
     @ApiPropertyOptional()
     @IsOptional()
+    @Transform(({ value }) => value === "true" || value === true)
     @IsBoolean()
     featured?: boolean;
 
     @ApiPropertyOptional()
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     @Min(0)
     displayOrder?: number;

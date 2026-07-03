@@ -1,86 +1,48 @@
 import {
-    Injectable,
-    NotFoundException,
+  Injectable,
+  NotFoundException,
 } from "@nestjs/common";
-
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
-import { promises as fs } from "fs";
-import { join } from "path";
-
 import { Course } from "../../../database/schemas/course.schema";
-
 import { AdminUpdateCourseDto } from "../dto/admin-update-course.dto";
+import { CloudinaryService } from "../../../common/cloudinary/cloudinary.service";
 
 @Injectable()
 export class AdminUpdateCourseService {
-    constructor(
-        @InjectModel(Course.name)
-        private courseModel: Model<Course>,
-    ) {}
+  constructor(
+    @InjectModel(Course.name)
+    private readonly courseModel: Model<Course>,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
-    async update(
-        courseId: string,
-        thumbnailFile: Express.Multer.File,
-        data: AdminUpdateCourseDto,
-    ) {
-        const existingCourse =
-            await this.courseModel
-                .findById(courseId)
-                .lean()
-                .exec();
+  async update(
+    courseId: string,
+    thumbnailFile: Express.Multer.File,
+    data: AdminUpdateCourseDto,
+  ): Promise<Course> {
+    const course = await this.courseModel.findById(courseId);
 
-        if (!existingCourse) {
-            throw new NotFoundException(
-                "Course not found",
-            );
-        }
-
-        const oldThumbnailUrl =
-            existingCourse.thumbnailUrl;
-
-        if (thumbnailFile) {
-            data.thumbnailUrl =
-                `/uploads/courses/thumbnails/${thumbnailFile.filename}`;
-        }
-
-        const updatedCourse =
-            await this.courseModel.findByIdAndUpdate(
-                courseId,
-                data,
-                {
-                    returnDocument: "after",
-                    runValidators: true,
-                },
-            );
-
-        if (!updatedCourse) {
-            throw new NotFoundException(
-                "Course not found",
-            );
-        }
-
-        if (
-            thumbnailFile &&
-            oldThumbnailUrl
-        ) {
-            try {
-                const oldPath = join(
-                    process.cwd(),
-                    "public",
-                    oldThumbnailUrl,
-                );
-
-                await fs.unlink(oldPath);
-            } catch (error) {
-                console.error(
-                    "Failed to delete old thumbnail:",
-                    error,
-                );
-            }
-        }
-
-        return updatedCourse;
+    if (!course) {
+      throw new NotFoundException("Course not found.");
     }
+
+    if (thumbnailFile) {
+      const uploaded = await this.cloudinaryService.replaceFile(
+        thumbnailFile,
+        "courses/thumbnails",
+        course.thumbnailPublicId,
+      );
+
+      data.thumbnailUrl = uploaded.secureUrl;
+      data.thumbnailPublicId = uploaded.publicId;
+    }
+
+    Object.assign(course, data);
+
+    await course.save();
+
+    return course;
+  }
 }

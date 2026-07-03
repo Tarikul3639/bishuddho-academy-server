@@ -1,5 +1,6 @@
 // teacher.module.ts
 
+import { diskStorage } from 'multer';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
@@ -7,6 +8,8 @@ import { Teacher, TeacherSchema } from '../../database/schemas/teacher.schema';
 
 import { AdminTeacherController } from './controller/teacher.controller';
 import { PublicTeacherController } from './controller/teacher.controller';
+import { CreateTeacherController } from './controller/create-teacher.controller';
+import { UpdateTeacherController } from './controller/update-teacher.controller';
 
 import { CreateTeacherService } from './services/create-teacher.service';
 import { UpdateTeacherService } from './services/update-teacher.service';
@@ -17,11 +20,12 @@ import { ReorderTeachersService } from './services/reorder-teachers.service';
 import { FeatureTeacherService } from './services/feature-teacher.service';
 import { ChangeStatusService } from './services/change-status.service';
 
+import { CommonModule } from '../../common/common.module';
+
 @Module({
     imports: [
-        MongooseModule.forFeature([
-            { name: Teacher.name, schema: TeacherSchema },
-        ]),
+        CommonModule,
+        MongooseModule.forFeature([{ name: Teacher.name, schema: TeacherSchema }]),
         MulterModule.register({
             fileFilter: (_req, file, cb) => {
                 if (!file.mimetype.startsWith('image/')) {
@@ -32,7 +36,12 @@ import { ChangeStatusService } from './services/change-status.service';
             limits: { fileSize: 5 * 1024 * 1024 },
         }),
     ],
-    controllers: [AdminTeacherController, PublicTeacherController],
+    controllers: [
+        AdminTeacherController,
+        PublicTeacherController,
+        CreateTeacherController,
+        UpdateTeacherController,
+    ],
     providers: [
         CreateTeacherService,
         UpdateTeacherService,
@@ -45,4 +54,4 @@ import { ChangeStatusService } from './services/change-status.service';
     ],
     exports: [GetTeachersService, GetTeacherDetailsService],
 })
-export class TeacherModule {}
+export class TeacherModule { }

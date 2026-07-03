@@ -8,6 +8,7 @@ import { UserRole } from '../../../database/schemas/user.schema';
 
 import { CreatePurchaseService } from '../service/create-purchase.service';
 import { AdminPurchasesService } from '../service/admin-purchases.service';
+import { UpdatePurchaseStatusService } from '../service/update-purchase-status.service';
 import { CreatePurchaseDto } from '../dto/create-purchase.dto';
 import { UpdatePurchaseStatusDto } from '../dto/update-purchase-status.dto';
 
@@ -17,6 +18,7 @@ export class PurchasesController {
     constructor(
         private readonly createPurchaseService: CreatePurchaseService,
         private readonly adminPurchasesService: AdminPurchasesService,
+        private readonly updatePurchaseStatusService: UpdatePurchaseStatusService,
     ) {}
 
     /* ── Student: Submit purchase ── */
@@ -64,6 +66,6 @@ export class PurchasesController {
         @Param('id') id: string,
         @Body() dto: UpdatePurchaseStatusDto,
     ) {
-        return this.adminPurchasesService.updateStatus(id, dto);
+        return this.updatePurchaseStatusService.execute(id, dto);
     }
 }

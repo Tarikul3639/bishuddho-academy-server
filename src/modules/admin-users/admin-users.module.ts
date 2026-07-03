@@ -14,10 +14,13 @@ import { AdminUsersController } from "./controller/admin-users.controller";
 import { FindAllUsersService } from "./services/find-all-users.service";
 import { FindUserDetailsService } from "./services/find-user-details.service";
 import { ToggleUserBlockService } from "./services/toggle-user-block.service";
-import { ResetUserPasswordService } from "./services/reset-user-password.service";
+import { AdminInitiatePasswordResetService } from "./services/admin-initiate-password-reset.service";
+
+import { CommonModule } from "../../common/common.module";
 
 @Module({
     imports: [
+        CommonModule,
         MongooseModule.forFeature([
             { name: User.name, schema: UserSchema },
             { name: Enrollment.name, schema: EnrollmentSchema },
@@ -29,7 +32,7 @@ import { ResetUserPasswordService } from "./services/reset-user-password.service
         FindAllUsersService,
         FindUserDetailsService,
         ToggleUserBlockService,
-        ResetUserPasswordService,
+        AdminInitiatePasswordResetService,
     ],
 })
 export class AdminUsersModule {}
