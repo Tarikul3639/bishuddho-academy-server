@@ -7,7 +7,7 @@ import {
     EnrollmentSchema,
 } from '../../database/schemas/enrollment.schema';
 import { Payment, PaymentSchema } from '../../database/schemas/payment.schema';
-import { Review, ReviewSchema } from 'src/database/schemas/review.schema';
+import { Review, ReviewSchema } from '../../database/schemas/review.schema';
 import {
     Certificate,
     CertificateSchema,
