@@ -5,39 +5,49 @@ import {
     Post,
     Res,
     UseGuards,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { ConfigService } from '@nestjs/config';
+import { ConfigService } from "@nestjs/config";
 
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+    ApiBody,
+    ApiOperation,
+    ApiResponse,
+    ApiTags,
+} from "@nestjs/swagger";
 
-import type { Response } from 'express';
+import type { Response } from "express";
 
-import ms, { type StringValue } from 'ms';
+import { type StringValue } from "ms";
 
-import { AuthService } from './auth.service';
+import { AuthService } from "./auth.service";
 
-import { LoginDto } from './dto/login.dto';
-import { LoginResponseDto } from './dto/login-response.dto';
+import { LoginDto } from "./dto/login.dto";
+import { LoginResponseDto } from "./dto/login-response.dto";
 
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { CurrentUser } from './decorators/current-user.decorator';
+import { JwtAuthGuard } from "./guards/jwt-auth.guard";
+import { CurrentUser } from "./decorators/current-user.decorator";
 
-@ApiTags('Authentication')
-@Controller('auth')
+import {
+    clearAuthCookie,
+    setAuthCookie,
+} from "./utils/auth-cookies";
+
+@ApiTags("Authentication")
+@Controller("auth")
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
         private readonly configService: ConfigService,
-    ) { }
+    ) {}
 
     /* ─────────────────────────────
          LOGIN
-      ───────────────────────────── */
+    ───────────────────────────── */
 
-    @Post('login')
+    @Post("login")
     @ApiOperation({
-        summary: 'Log in user',
+        summary: "Log in user",
     })
     @ApiBody({
         type: LoginDto,
@@ -58,29 +68,26 @@ export class AuthController {
         const result = await this.authService.login(loginDto);
 
         const expiresIn =
-            this.configService.get<string>('JWT_ACCESS_EXPIRES_IN') || '7d';
+            this.configService.get<StringValue>(
+                "JWT_ACCESS_EXPIRES_IN",
+            ) ?? "7d";
 
-        const isProduction =
-            this.configService.get<string>("NODE_ENV") === "production";
-
-        res.cookie("access_token", result.accessToken, {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: "lax",
-            path: "/",
-            maxAge: ms(expiresIn as StringValue),
-        });
+        setAuthCookie(
+            res,
+            result.accessToken,
+            expiresIn,
+        );
 
         return result;
     }
 
     /* ─────────────────────────────
          LOGOUT
-      ───────────────────────────── */
+    ───────────────────────────── */
 
-    @Post('logout')
+    @Post("logout")
     @ApiOperation({
-        summary: 'Logout user',
+        summary: "Logout user",
     })
     logout(
         @Res({
@@ -88,32 +95,27 @@ export class AuthController {
         })
         res: Response,
     ) {
-        const isProduction =
-            this.configService.get<string>("NODE_ENV") === "production";
-
-        res.clearCookie("access_token", {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: "lax",
-            path: "/",
-        });
+        clearAuthCookie(res);
 
         return {
             success: true,
-            message: 'Logout successful',
+            message: "Logout successful",
         };
     }
 
     /* ─────────────────────────────
          CURRENT USER
-      ───────────────────────────── */
+    ───────────────────────────── */
 
-    @Get('me')
+    @Get("me")
     @UseGuards(JwtAuthGuard)
     @ApiOperation({
-        summary: 'Get current logged in user',
+        summary: "Get current logged in user",
     })
-    async me(@CurrentUser('userId') userId: string) {
+    async me(
+        @CurrentUser("userId")
+        userId: string,
+    ) {
         return this.authService.findUserById(userId);
     }
 }
