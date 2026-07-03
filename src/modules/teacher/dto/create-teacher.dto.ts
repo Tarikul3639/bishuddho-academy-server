@@ -2,64 +2,20 @@
 
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-    IsString,
-    IsOptional,
-    IsBoolean,
-    IsNumber,
     IsArray,
-    ValidateNested,
+    IsBoolean,
     IsEmail,
-    IsUrl,
+    IsNumber,
+    IsOptional,
+    IsString,
     Min,
+    ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-/* ─── Sub DTOs ─── */
-export class EducationHistoryDto {
-    @ApiProperty()
-    @IsString()
-    degree!: string;
-
-    @ApiProperty()
-    @IsString()
-    university!: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    field?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsNumber()
-    year?: number;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    grade?: string;
-}
-
-export class PublicationDto {
-    @ApiProperty()
-    @IsString()
-    title!: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    journal?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsNumber()
-    year?: number;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    url?: string;
-}
+/* ─────────────────────────────
+   SUB DTOs
+───────────────────────────── */
 
 export class SocialLinksDto {
     @ApiPropertyOptional()
@@ -81,49 +37,15 @@ export class SocialLinksDto {
     @IsOptional()
     @IsString()
     website?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    googleScholar?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    researchGate?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    youtube?: string;
 }
 
-export class TeacherSeoDto {
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    metaTitle?: string;
+/* ─────────────────────────────
+   MAIN DTO
+───────────────────────────── */
 
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    metaDescription?: string;
-
-    @ApiPropertyOptional({ type: [String] })
-    @IsOptional()
-    @IsArray()
-    @IsString({ each: true })
-    keywords?: string[];
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    canonicalUrl?: string;
-}
-
-/* ─── Main DTO ─── */
 export class CreateTeacherDto {
-    // Basic
+    /* ───────── BASIC INFORMATION ───────── */
+
     @ApiProperty()
     @IsString()
     fullName!: string;
@@ -139,11 +61,6 @@ export class CreateTeacherDto {
     @ApiPropertyOptional()
     @IsOptional()
     @IsString()
-    department?: string;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
     shortBio?: string;
 
     @ApiPropertyOptional()
@@ -151,9 +68,11 @@ export class CreateTeacherDto {
     @IsString()
     biography?: string;
 
+    /* ───────── CONTACT ───────── */
+
     @ApiPropertyOptional()
     @IsOptional()
-    @IsString()
+    @IsEmail()
     email?: string;
 
     @ApiPropertyOptional()
@@ -161,42 +80,8 @@ export class CreateTeacherDto {
     @IsString()
     phone?: string;
 
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    officeAddress?: string;
+    /* ───────── PROFESSIONAL ───────── */
 
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    officeHours?: string;
-
-    // Academic
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    academicRank?: string;
-
-    @ApiPropertyOptional({ type: [EducationHistoryDto] })
-    @IsOptional()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => EducationHistoryDto)
-    educationHistory?: EducationHistoryDto[];
-
-    @ApiPropertyOptional({ type: [String] })
-    @IsOptional()
-    @IsArray()
-    @IsString({ each: true })
-    specialization?: string[];
-
-    @ApiPropertyOptional({ type: [String] })
-    @IsOptional()
-    @IsArray()
-    @IsString({ each: true })
-    researchInterests?: string[];
-
-    // Professional
     @ApiPropertyOptional()
     @IsOptional()
     @IsNumber()
@@ -207,70 +92,17 @@ export class CreateTeacherDto {
     @IsOptional()
     @IsArray()
     @IsString({ each: true })
-    achievements?: string[];
+    skills?: string[];
 
-    @ApiPropertyOptional({ type: [String] })
-    @IsOptional()
-    @IsArray()
-    @IsString({ each: true })
-    awards?: string[];
+    /* ───────── SOCIAL LINKS ───────── */
 
-    @ApiPropertyOptional({ type: [String] })
-    @IsOptional()
-    @IsArray()
-    @IsString({ each: true })
-    certifications?: string[];
-
-    @ApiPropertyOptional({ type: [PublicationDto] })
-    @IsOptional()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => PublicationDto)
-    publications?: PublicationDto[];
-
-    @ApiPropertyOptional({ type: [String] })
-    @IsOptional()
-    @IsArray()
-    @IsString({ each: true })
-    memberships?: string[];
-
-    // Teaching
-    @ApiPropertyOptional({ type: [String] })
-    @IsOptional()
-    @IsArray()
-    @IsString({ each: true })
-    currentCourses?: string[];
-
-    @ApiPropertyOptional({ type: [String] })
-    @IsOptional()
-    @IsArray()
-    @IsString({ each: true })
-    previousCourses?: string[];
-
-    @ApiPropertyOptional({ type: [String] })
-    @IsOptional()
-    @IsArray()
-    @IsString({ each: true })
-    expertise?: string[];
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsNumber()
-    @Min(0)
-    instructorPriority?: number;
-
-    // Social
     @ApiPropertyOptional({ type: SocialLinksDto })
     @IsOptional()
     @ValidateNested()
     @Type(() => SocialLinksDto)
     socialLinks?: SocialLinksDto;
 
-    // Display settings
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsBoolean()
-    featured?: boolean;
+    /* ───────── DISPLAY SETTINGS ───────── */
 
     @ApiPropertyOptional()
     @IsOptional()
@@ -279,39 +111,12 @@ export class CreateTeacherDto {
 
     @ApiPropertyOptional()
     @IsOptional()
+    @IsBoolean()
+    featured?: boolean;
+
+    @ApiPropertyOptional()
+    @IsOptional()
     @IsNumber()
     @Min(0)
     displayOrder?: number;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsBoolean()
-    isFounder?: boolean;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsBoolean()
-    isLeadInstructor?: boolean;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsBoolean()
-    showOnHomepage?: boolean;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsBoolean()
-    showContact?: boolean;
-
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsBoolean()
-    showSocialLinks?: boolean;
-
-    // SEO
-    @ApiPropertyOptional({ type: TeacherSeoDto })
-    @IsOptional()
-    @ValidateNested()
-    @Type(() => TeacherSeoDto)
-    seo?: TeacherSeoDto;
 }

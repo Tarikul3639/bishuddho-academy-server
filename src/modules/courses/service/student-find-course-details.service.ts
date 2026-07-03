@@ -10,6 +10,7 @@ import {
 } from "../../../database/schemas/enrollment.schema";
 import { Payment, PaymentStatus } from "../../../database/schemas/payment.schema";
 import { Course } from "../../../database/schemas/course.schema";
+import { Certificate } from "../../../database/schemas/certificate.schema";
 import { StudentCourseDetailsResponseDto } from "../dto/student-course-details-response.dto";
 
 @Injectable()
@@ -23,6 +24,9 @@ export class StudentFindCourseDetailsService {
 
         @InjectModel(Course.name)
         private readonly courseModel: Model<Course>,
+
+        @InjectModel(Certificate.name)
+        private readonly certificateModel: Model<Certificate>,
     ) { }
 
     async findById(
@@ -34,7 +38,7 @@ export class StudentFindCourseDetailsService {
                 userId: new Types.ObjectId(userId),
                 courseId: new Types.ObjectId(courseId),
                 status: {
-                    $in: [EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED],
+                    $in: [EnrollmentStatus.ACTIVE],
                 },
             })
             .lean()
@@ -70,7 +74,7 @@ export class StudentFindCourseDetailsService {
         const bookedSeats = await this.enrollmentModel.countDocuments({
             courseId: course._id,
             status: {
-                $in: [EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED],
+                $in: [EnrollmentStatus.ACTIVE],
             },
         });
 
@@ -79,6 +83,14 @@ export class StudentFindCourseDetailsService {
                 (total, module) => total + (module.classes?.length || 0),
                 0,
             ) || 0;
+
+        const certificate =
+            await this.certificateModel
+                .findOne({
+                    enrollmentId: enrollment._id,
+                })
+                .lean()
+                .exec();
 
         return {
             courseId: course._id.toString(),
@@ -117,6 +129,13 @@ export class StudentFindCourseDetailsService {
                 verifiedAt: payment.verifiedAt,
                 rejectionReason: payment.rejectionReason,
             },
+
+            certificate: certificate
+                ? {
+                    certificateId: certificate._id.toString(),
+                    certificateNo: certificate.certificateNo,
+                    issuedAt: certificate.issuedAt,
+                } : null,
 
             modules:
                 course.modules?.map((module) => ({

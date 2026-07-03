@@ -17,4 +17,9 @@ export const envValidationSchema = Joi.object({
 
     JWT_REFRESH_SECRET: Joi.string().required(),
     JWT_REFRESH_EXPIRES_IN: Joi.string().default("7d"),
+
+    // Cloudinary
+    CLOUDINARY_CLOUD_NAME: Joi.string().required(),
+    CLOUDINARY_API_KEY: Joi.string().required(),
+    CLOUDINARY_API_SECRET: Joi.string().required(),
 });

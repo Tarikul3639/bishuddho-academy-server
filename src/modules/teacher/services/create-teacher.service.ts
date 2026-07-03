@@ -9,13 +9,13 @@ import { CreateTeacherDto } from '../dto/create-teacher.dto';
 @Injectable()
 export class CreateTeacherService {
     constructor(
-        @InjectModel(Teacher.name) private readonly teacherModel: Model<Teacher>,
-    ) {}
+        @InjectModel(Teacher.name)
+        private readonly teacherModel: Model<Teacher>,
+    ) { }
 
     async create(
         dto: CreateTeacherDto,
         profileImageFile?: Express.Multer.File,
-        coverImageFile?: Express.Multer.File,
     ) {
         const existing = await this.teacherModel
             .findOne({ slug: dto.slug })
@@ -23,21 +23,18 @@ export class CreateTeacherService {
             .exec();
 
         if (existing) {
-            throw new ConflictException(`A teacher with slug "${dto.slug}" already exists`);
+            throw new ConflictException(
+                `A teacher with slug "${dto.slug}" already exists`,
+            );
         }
 
         const profileImage = profileImageFile
             ? `/uploads/teachers/profiles/${profileImageFile.filename}`
             : '';
 
-        const coverImage = coverImageFile
-            ? `/uploads/teachers/covers/${coverImageFile.filename}`
-            : '';
-
         const teacher = await this.teacherModel.create({
             ...dto,
             profileImage,
-            coverImage,
         });
 
         return {
@@ -45,7 +42,18 @@ export class CreateTeacherService {
             fullName: teacher.fullName,
             slug: teacher.slug,
             designation: teacher.designation,
+            shortBio: teacher.shortBio,
+            biography: teacher.biography,
             profileImage: teacher.profileImage,
+            email: teacher.email,
+            phone: teacher.phone,
+            yearsOfExperience: teacher.yearsOfExperience,
+            skills: teacher.skills,
+            socialLinks: teacher.socialLinks,
+            isActive: teacher.isActive,
+            featured: teacher.featured,
+            displayOrder: teacher.displayOrder,
+            createdAt: teacher.createdAt,
         };
     }
 }

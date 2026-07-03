@@ -9,19 +9,15 @@ import { GetTeachersDto } from '../dto/get-teachers.dto';
 @Injectable()
 export class GetTeachersService {
     constructor(
-        @InjectModel(Teacher.name) private readonly teacherModel: Model<Teacher>,
+        @InjectModel(Teacher.name)
+        private readonly teacherModel: Model<Teacher>,
     ) {}
 
     async findAll(query: GetTeachersDto) {
         const {
             search,
-            department,
-            expertise,
             featured,
             isActive,
-            isFounder,
-            isLeadInstructor,
-            showOnHomepage,
             page = 1,
             limit = 20,
         } = query;
@@ -32,19 +28,18 @@ export class GetTeachersService {
             filter.$or = [
                 { fullName: { $regex: search, $options: 'i' } },
                 { designation: { $regex: search, $options: 'i' } },
-                { department: { $regex: search, $options: 'i' } },
                 { shortBio: { $regex: search, $options: 'i' } },
-                { expertise: { $elemMatch: { $regex: search, $options: 'i' } } },
+                { skills: { $elemMatch: { $regex: search, $options: 'i' } } },
             ];
         }
 
-        if (department) filter.department = { $regex: department, $options: 'i' };
-        if (expertise) filter.expertise = { $elemMatch: { $regex: expertise, $options: 'i' } };
-        if (featured !== undefined) filter.featured = featured;
-        if (isActive !== undefined) filter.isActive = isActive;
-        if (isFounder !== undefined) filter.isFounder = isFounder;
-        if (isLeadInstructor !== undefined) filter.isLeadInstructor = isLeadInstructor;
-        if (showOnHomepage !== undefined) filter.showOnHomepage = showOnHomepage;
+        if (featured !== undefined) {
+            filter.featured = featured;
+        }
+
+        if (isActive !== undefined) {
+            filter.isActive = isActive;
+        }
 
         const skip = (page - 1) * limit;
 
@@ -57,27 +52,24 @@ export class GetTeachersService {
                 .select('-__v')
                 .lean()
                 .exec(),
+
             this.teacherModel.countDocuments(filter),
         ]);
 
         return {
-            teachers: teachers.map((t) => ({
-                teacherId: t._id.toString(),
-                fullName: t.fullName,
-                slug: t.slug,
-                designation: t.designation,
-                department: t.department,
-                shortBio: t.shortBio,
-                profileImage: t.profileImage,
-                expertise: t.expertise,
-                featured: t.featured,
-                isActive: t.isActive,
-                isFounder: t.isFounder,
-                isLeadInstructor: t.isLeadInstructor,
-                displayOrder: t.displayOrder,
-                showOnHomepage: t.showOnHomepage,
-                yearsOfExperience: t.yearsOfExperience,
-                socialLinks: t.socialLinks,
+            teachers: teachers.map((teacher) => ({
+                teacherId: teacher._id.toString(),
+                fullName: teacher.fullName,
+                slug: teacher.slug,
+                designation: teacher.designation,
+                shortBio: teacher.shortBio,
+                profileImage: teacher.profileImage,
+                yearsOfExperience: teacher.yearsOfExperience,
+                skills: teacher.skills,
+                socialLinks: teacher.socialLinks,
+                featured: teacher.featured,
+                isActive: teacher.isActive,
+                displayOrder: teacher.displayOrder,
             })),
             pagination: {
                 page,

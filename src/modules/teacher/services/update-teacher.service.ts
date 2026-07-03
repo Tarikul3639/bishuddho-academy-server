@@ -1,5 +1,3 @@
-// update-teacher.service.ts
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -9,33 +7,37 @@ import { UpdateTeacherDto } from '../dto/update-teacher.dto';
 @Injectable()
 export class UpdateTeacherService {
     constructor(
-        @InjectModel(Teacher.name) private readonly teacherModel: Model<Teacher>,
+        @InjectModel(Teacher.name)
+        private readonly teacherModel: Model<Teacher>,
     ) {}
 
     async update(
         teacherId: string,
         dto: UpdateTeacherDto,
         profileImageFile?: Express.Multer.File,
-        coverImageFile?: Express.Multer.File,
     ) {
         const teacher = await this.teacherModel.findById(teacherId).exec();
 
         if (!teacher) {
-            throw new NotFoundException(`Teacher with ID "${teacherId}" not found`);
+            throw new NotFoundException(
+                `Teacher with ID "${teacherId}" not found`,
+            );
         }
 
-        const updates: Partial<Teacher> & Record<string, unknown> = { ...dto };
+        const updates: Partial<Teacher> & Record<string, unknown> = {
+            ...dto,
+        };
 
         if (profileImageFile) {
             updates.profileImage = `/uploads/teachers/profiles/${profileImageFile.filename}`;
         }
 
-        if (coverImageFile) {
-            updates.coverImage = `/uploads/teachers/covers/${coverImageFile.filename}`;
-        }
-
         const updated = await this.teacherModel
-            .findByIdAndUpdate(teacherId, { $set: updates }, { new: true })
+            .findByIdAndUpdate(
+                teacherId,
+                { $set: updates },
+                { new: true },
+            )
             .lean()
             .exec();
 
@@ -45,7 +47,17 @@ export class UpdateTeacherService {
             slug: updated!.slug,
             designation: updated!.designation,
             profileImage: updated!.profileImage,
-            coverImage: updated!.coverImage,
+            shortBio: updated!.shortBio,
+            biography: updated!.biography,
+            email: updated!.email,
+            phone: updated!.phone,
+            yearsOfExperience: updated!.yearsOfExperience,
+            skills: updated!.skills,
+            socialLinks: updated!.socialLinks,
+            isActive: updated!.isActive,
+            featured: updated!.featured,
+            displayOrder: updated!.displayOrder,
+            updatedAt: updated!.updatedAt,
         };
     }
 }

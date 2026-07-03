@@ -40,28 +40,25 @@ import { ReorderTeachersDto } from '../dto/reorder-teachers.dto';
 import { FeatureTeacherDto } from '../dto/feature-teacher.dto';
 import { ChangeStatusDto } from '../dto/change-status.dto';
 
-/* ─── Multer Storage ─── */
-function buildStorage(subDir: string) {
-    return diskStorage({
-        destination: join(process.cwd(), 'public', 'uploads', 'teachers', subDir),
-        filename: (_req, file, cb) => {
-            const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-            cb(null, `${unique}${extname(file.originalname)}`);
-        },
-    });
-}
+/* ─────────────────────────────
+   MULTER
+───────────────────────────── */
 
 const teacherImageInterceptor = FileFieldsInterceptor(
-    [
-        { name: 'profileImageFile', maxCount: 1 },
-        { name: 'coverImageFile', maxCount: 1 },
-    ],
+    [{ name: 'profileImageFile', maxCount: 1 }],
     {
         storage: diskStorage({
-            destination: (req, file, cb) => {
-                const subDir = file.fieldname === 'profileImageFile' ? 'profiles' : 'covers';
-                const dest = join(process.cwd(), 'public', 'uploads', 'teachers', subDir);
-                cb(null, dest);
+            destination: (_req, _file, cb) => {
+                cb(
+                    null,
+                    join(
+                        process.cwd(),
+                        'public',
+                        'uploads',
+                        'teachers',
+                        'profiles',
+                    ),
+                );
             },
             filename: (_req, file, cb) => {
                 const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
@@ -72,13 +69,19 @@ const teacherImageInterceptor = FileFieldsInterceptor(
             if (!file.mimetype.startsWith('image/')) {
                 return cb(new Error('Only image files are allowed'), false);
             }
+
             cb(null, true);
         },
-        limits: { fileSize: 5 * 1024 * 1024 },
+        limits: {
+            fileSize: 5 * 1024 * 1024,
+        },
     },
 );
 
-/* ─── Admin Controller ─── */
+/* ─────────────────────────────
+   ADMIN CONTROLLER
+───────────────────────────── */
+
 @ApiTags('Admin Teachers')
 @Controller('admin/teachers')
 export class AdminTeacherController {
@@ -94,28 +97,32 @@ export class AdminTeacherController {
     ) {}
 
     /* CREATE */
+
     @Post()
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Create a new teacher' })
-    @ApiResponse({ status: 201, description: 'Teacher created successfully' })
+    @ApiResponse({
+        status: 201,
+        description: 'Teacher created successfully',
+    })
     @UseInterceptors(teacherImageInterceptor)
     create(
         @UploadedFiles()
         files: {
             profileImageFile?: Express.Multer.File[];
-            coverImageFile?: Express.Multer.File[];
         },
         @Body('teacherData') teacherData: string,
     ) {
         const dto: CreateTeacherDto = JSON.parse(teacherData);
+
         return this.createTeacherService.create(
             dto,
             files?.profileImageFile?.[0],
-            files?.coverImageFile?.[0],
         );
     }
 
     /* GET ALL */
+
     @Get()
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Get all teachers (admin)' })
@@ -123,7 +130,8 @@ export class AdminTeacherController {
         return this.getTeachersService.findAll(query);
     }
 
-    /* GET ONE BY ID (admin) */
+    /* GET ONE */
+
     @Get(':teacherId')
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Get teacher details by ID (admin)' })
@@ -132,6 +140,7 @@ export class AdminTeacherController {
     }
 
     /* UPDATE */
+
     @Patch(':teacherId')
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Update teacher' })
@@ -141,20 +150,20 @@ export class AdminTeacherController {
         @UploadedFiles()
         files: {
             profileImageFile?: Express.Multer.File[];
-            coverImageFile?: Express.Multer.File[];
         },
         @Body('teacherData') teacherData: string,
     ) {
         const dto: UpdateTeacherDto = JSON.parse(teacherData);
+
         return this.updateTeacherService.update(
             teacherId,
             dto,
             files?.profileImageFile?.[0],
-            files?.coverImageFile?.[0],
         );
     }
 
     /* DELETE */
+
     @Delete(':teacherId')
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Delete teacher' })
@@ -163,6 +172,7 @@ export class AdminTeacherController {
     }
 
     /* REORDER */
+
     @Patch('action/reorder')
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Reorder teachers' })
@@ -170,10 +180,11 @@ export class AdminTeacherController {
         return this.reorderTeachersService.reorder(dto);
     }
 
-    /* FEATURE / UNFEATURE */
+    /* FEATURE */
+
     @Patch(':teacherId/feature')
     @ApiBearerAuth()
-    @ApiOperation({ summary: 'Feature or unfeature a teacher' })
+    @ApiOperation({ summary: 'Feature / Unfeature teacher' })
     feature(
         @Param('teacherId') teacherId: string,
         @Body() dto: FeatureTeacherDto,
@@ -181,10 +192,11 @@ export class AdminTeacherController {
         return this.featureTeacherService.feature(teacherId, dto);
     }
 
-    /* CHANGE STATUS */
+    /* STATUS */
+
     @Patch(':teacherId/status')
     @ApiBearerAuth()
-    @ApiOperation({ summary: 'Change teacher active status' })
+    @ApiOperation({ summary: 'Change teacher status' })
     changeStatus(
         @Param('teacherId') teacherId: string,
         @Body() dto: ChangeStatusDto,
@@ -193,7 +205,10 @@ export class AdminTeacherController {
     }
 }
 
-/* ─── Public Controller ─── */
+/* ─────────────────────────────
+   PUBLIC CONTROLLER
+───────────────────────────── */
+
 @ApiTags('Public Teachers')
 @Controller('public/teachers')
 export class PublicTeacherController {
@@ -203,13 +218,20 @@ export class PublicTeacherController {
     ) {}
 
     @Get()
-    @ApiOperation({ summary: 'Get all active teachers (public)' })
+    @ApiOperation({
+        summary: 'Get all active teachers',
+    })
     findAll(@Query() query: GetTeachersDto) {
-        return this.getTeachersService.findAll({ ...query, isActive: true });
+        return this.getTeachersService.findAll({
+            ...query,
+            isActive: true,
+        });
     }
 
     @Get(':slug')
-    @ApiOperation({ summary: 'Get teacher details by slug (public)' })
+    @ApiOperation({
+        summary: 'Get teacher details by slug',
+    })
     findOne(@Param('slug') slug: string) {
         return this.getTeacherDetailsService.findBySlug(slug);
     }

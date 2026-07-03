@@ -28,6 +28,12 @@ export class StudentCoursePaymentDto {
   rejectionReason?: string;
 }
 
+export class StudentCourseCertificateDto {
+  certificateId!: string;
+  certificateNo!: string;
+  issuedAt!: Date;
+}
+
 export class StudentCourseDetailsResponseDto {
   courseId!: string;
   title!: string;
@@ -49,4 +55,5 @@ export class StudentCourseDetailsResponseDto {
   status!: EnrollmentStatus;
   payment!: StudentCoursePaymentDto;
   modules!: StudentCourseModuleDto[];
+  certificate!: StudentCourseCertificateDto | null;
 }

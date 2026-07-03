@@ -5,7 +5,7 @@ import * as MongooseSchema from "mongoose";
 export enum EnrollmentStatus {
     ACTIVE = "active",
     PENDING = "pending",
-    COMPLETED = "completed",
+    CANCELLED = "cancelled", // Soft delete, not used in the system
 }
 
 @Schema({
@@ -31,6 +31,12 @@ export class Enrollment {
         default: EnrollmentStatus.PENDING,
     })
     status!: EnrollmentStatus;
+
+    @Prop({
+        type: Date,
+        default: Date.now,
+    })
+    createdAt!: Date;
 }
 
 export const EnrollmentSchema =
