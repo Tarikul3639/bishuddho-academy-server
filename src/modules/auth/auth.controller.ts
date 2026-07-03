@@ -60,11 +60,14 @@ export class AuthController {
         const expiresIn =
             this.configService.get<string>('JWT_ACCESS_EXPIRES_IN') || '7d';
 
-        res.cookie('access_token', result.accessToken, {
+        const isProduction = this.configService.get<string>('NODE_ENV') === "production";
+
+        res.cookie("access_token", result.accessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: ms(expiresIn as StringValue),
+            path: "/",
         });
 
         return result;
@@ -84,10 +87,11 @@ export class AuthController {
         })
         res: Response,
     ) {
+        const isProduction = this.configService.get<string>('NODE_ENV') === "production";
         res.clearCookie('access_token', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
         });
 
         return {
