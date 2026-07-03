@@ -30,8 +30,10 @@ export class AdminFindCourseDetailsService {
     ) { }
 
     async findById(courseId: string): Promise<AdminFindCourseDetailsResponseDto> {
+        const courseObjectId = new Types.ObjectId(courseId);
+        
         const course = await this.courseModel
-            .findById(new Types.ObjectId(courseId))
+            .findById(courseObjectId)
             .lean()
             .exec();
 

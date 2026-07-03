@@ -8,6 +8,7 @@ import {
 } from '../../database/schemas/enrollment.schema';
 import { Payment, PaymentSchema } from '../../database/schemas/payment.schema';
 import { Review, ReviewSchema } from 'src/database/schemas/review.schema';
+import { Certificate, CertificateSchema } from 'src/database/schemas/certificate.schema';
 
 import { AdminFindAllCoursesService } from './service/admin-find-all-courses.service';
 import { AdminCreateCourseService } from './service/admin-courses-create.service';
@@ -32,6 +33,7 @@ import { StudentCancelEnrollmentService } from './service/student-cancel-enrollm
             { name: Enrollment.name, schema: EnrollmentSchema },
             { name: Payment.name, schema: PaymentSchema },
             { name: Review.name, schema: ReviewSchema },
+            { name: Certificate.name, schema: CertificateSchema },
         ]),
         MulterModule.register({
             fileFilter: (req, file, cb) => {

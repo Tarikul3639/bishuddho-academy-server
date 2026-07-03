@@ -130,6 +130,7 @@ export class AdminCoursesController {
         @Param("courseId")
         courseId: string,
     ): Promise<AdminFindCourseDetailsResponseDto> {
+        console.log("courseId", courseId);
         return this.adminFindCourseDetailsService.findById(
             courseId,
         );
