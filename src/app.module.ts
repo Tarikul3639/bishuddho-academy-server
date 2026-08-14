@@ -20,7 +20,6 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ProfileModule } from './modules/profile/profile.module';
 
 // _-_-_-_ Seed _-_-_-.
-import { SeedModule } from './seeds/seed.module';
 import { User, UserSchema } from './database/schemas/user.schema';
 
 @Module({
@@ -52,8 +51,6 @@ import { User, UserSchema } from './database/schemas/user.schema';
     TeacherModule,
     AdminDashboardModule,
     CertificateModule,
-
-    SeedModule,
   ],
 
   controllers: [],

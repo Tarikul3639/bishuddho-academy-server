@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   Certificate,
@@ -23,9 +24,11 @@ import { PaymentSeedService } from './services/payment.seed.service';
 import { ReviewSeedService } from './services/review.seed.service';
 import { TeacherSeedService } from './services/teacher.seed.service';
 import { UserSeedService } from './services/user.seed.service';
+import { DatabaseModule } from '../database/database.module';
 
 @Module({
   imports: [
+    DatabaseModule,
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Teacher.name, schema: TeacherSchema },
@@ -36,6 +39,10 @@ import { UserSeedService } from './services/user.seed.service';
       { name: Review.name, schema: ReviewSchema },
       { name: Certificate.name, schema: CertificateSchema },
     ]),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env.local', '.env.development', '.env'],
+    }),
   ],
   providers: [
     SeedService,
@@ -50,4 +57,4 @@ import { UserSeedService } from './services/user.seed.service';
   ],
   exports: [SeedService],
 })
-export class SeedModule {}
+export class SeedModule { }

@@ -1,20 +1,20 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../app.module';
+import { SeedModule } from './seed.module';
 import { SeedService } from './seed.service';
 
-async function runSeed(): Promise<void> {
-  const app = await NestFactory.createApplicationContext(AppModule);
+async function runSeed() {
+  const app = await NestFactory.createApplicationContext(SeedModule);
 
-  try {
-    const seedService = app.get(SeedService);
-    await seedService.seed();
-    console.log('🌱 Seed script finished');
-  } finally {
-    await app.close();
-  }
+  const seedService = app.get(SeedService);
+
+  await seedService.seed();
+
+  await app.close();
+
+  console.log('🌱 Seed completed successfully');
 }
 
-runSeed().catch((error: unknown) => {
-  console.error('Seed script failed', error);
-  process.exitCode = 1;
+runSeed().catch((err) => {
+  console.error('Seed script failed', err);
+  process.exit(1);
 });
