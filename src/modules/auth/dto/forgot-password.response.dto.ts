@@ -1,14 +1,13 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ForgotPasswordResponseDto {
-    @ApiProperty({
-        example: true,
-    })
-    success!: boolean;
+  @ApiProperty({
+    example: true,
+  })
+  success!: boolean;
 
-    @ApiProperty({
-        example:
-            "Password reset link sent successfully.",
-    })
-    message!: string;
+  @ApiProperty({
+    example: 'Password reset link sent successfully.',
+  })
+  message!: string;
 }

@@ -1,27 +1,27 @@
-import { baseTemplate } from "./base-email.template";
+import { baseTemplate } from './base-email.template';
 
 interface CertificateIssuedTemplateOptions {
-    name: string;
+  name: string;
 
-    courseTitle: string;
+  courseTitle: string;
 
-    certificateNo: string;
+  certificateNo: string;
 
-    certificateUrl: string;
+  certificateUrl: string;
 }
 
 export function certificateIssuedTemplate({
-    name,
-    courseTitle,
-    certificateNo,
-    certificateUrl,
+  name,
+  courseTitle,
+  certificateNo,
+  certificateUrl,
 }: CertificateIssuedTemplateOptions): string {
-    return baseTemplate({
-        title: "Certificate Issued",
+  return baseTemplate({
+    title: 'Certificate Issued',
 
-        heading: `Congratulations, ${name}!`,
+    heading: `Congratulations, ${name}!`,
 
-        content: `
+    content: `
 <p>
 Congratulations on successfully completing your course.
 </p>
@@ -43,8 +43,8 @@ You can view or download your certificate anytime from your student dashboard.
 </p>
 `,
 
-        buttonText: "View Certificate",
+    buttonText: 'View Certificate',
 
-        buttonUrl: certificateUrl,
-    });
+    buttonUrl: certificateUrl,
+  });
 }

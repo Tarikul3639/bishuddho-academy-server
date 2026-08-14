@@ -1,7 +1,7 @@
 // src/interfaces/enrollment-with-user.interface.ts
 
-import { Types } from "mongoose";
-import { EnrollmentStatus } from "../../../database/schemas/enrollment.schema";
+import { Types } from 'mongoose';
+import { EnrollmentStatus } from '../../../database/schemas/enrollment.schema';
 
 export interface EnrollmentWithUser {
   _id: Types.ObjectId;

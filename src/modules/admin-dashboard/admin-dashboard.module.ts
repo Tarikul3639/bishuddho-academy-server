@@ -12,33 +12,32 @@ import { GetDashboardStatsController } from './controllers/get-dashboard-stats.c
 
 import { Course, CourseSchema } from '../../database/schemas/course.schema';
 import {
-    Enrollment,
-    EnrollmentSchema,
+  Enrollment,
+  EnrollmentSchema,
 } from '../../database/schemas/enrollment.schema';
 import { Payment, PaymentSchema } from 'src/database/schemas/payment.schema';
 import { User, UserSchema } from 'src/database/schemas/user.schema';
 
 @Module({
-    imports: [
-        MongooseModule.forFeature([
-            { name: User.name, schema: UserSchema },
-            { name: Course.name, schema: CourseSchema },
-            { name: Enrollment.name, schema: EnrollmentSchema },
-            { name: Payment.name, schema: PaymentSchema },
-        ]),
-    ],
-    controllers: [
-        GetDashboardCoursesController,
-        GetPendingPaymentsController,
-        GetRecentEnrollmentsController,
-        GetDashboardStatsController,
-    ],
-    providers: [
-        GetDashboardCoursesService,
-        GetPendingPaymentsService,
-        GetRecentEnrollmentsService,
-        GetDashboardStatsService,
-    ],
+  imports: [
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Course.name, schema: CourseSchema },
+      { name: Enrollment.name, schema: EnrollmentSchema },
+      { name: Payment.name, schema: PaymentSchema },
+    ]),
+  ],
+  controllers: [
+    GetDashboardCoursesController,
+    GetPendingPaymentsController,
+    GetRecentEnrollmentsController,
+    GetDashboardStatsController,
+  ],
+  providers: [
+    GetDashboardCoursesService,
+    GetPendingPaymentsService,
+    GetRecentEnrollmentsService,
+    GetDashboardStatsService,
+  ],
 })
-export class AdminDashboardModule { }
-
+export class AdminDashboardModule {}

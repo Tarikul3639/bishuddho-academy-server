@@ -3,14 +3,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
 import { Course, CourseSchema } from '../../database/schemas/course.schema';
 import {
-    Enrollment,
-    EnrollmentSchema,
+  Enrollment,
+  EnrollmentSchema,
 } from '../../database/schemas/enrollment.schema';
 import { Payment, PaymentSchema } from '../../database/schemas/payment.schema';
 import { Review, ReviewSchema } from '../../database/schemas/review.schema';
 import {
-    Certificate,
-    CertificateSchema,
+  Certificate,
+  CertificateSchema,
 } from 'src/database/schemas/certificate.schema';
 
 import { AdminFindAllCoursesService } from './service/admin-find-all-courses.service';
@@ -39,48 +39,48 @@ import { GetAllCoursesController } from './controller/get-all-courses.controller
 import { CommonModule } from '../../common/common.module';
 
 @Module({
-    imports: [
-        CommonModule,
-        MongooseModule.forFeature([
-            { name: Course.name, schema: CourseSchema },
-            { name: Enrollment.name, schema: EnrollmentSchema },
-            { name: Payment.name, schema: PaymentSchema },
-            { name: Review.name, schema: ReviewSchema },
-            { name: Certificate.name, schema: CertificateSchema },
-        ]),
-        MulterModule.register({
-            fileFilter: (req, file, cb) => {
-                if (!file.mimetype.startsWith('image/')) {
-                    return cb(new Error('Only image files are allowed'), false);
-                }
-                cb(null, true);
-            },
-            limits: { fileSize: 5 * 1024 * 1024 },
-        }),
-    ],
-    controllers: [
-        PublicCoursesController,
-        StudentCoursesController,
-        CreateCourseController,
-        UpdateCourseController,
-        GetCourseDetailsController,
-        GetAllCoursesController,
-        DeleteCourseController,
-    ],
-    providers: [
-        AdminCreateCourseService,
-        AdminFindAllCoursesService,
-        AdminFindCourseDetailsService,
-        AdminUpdateCourseService,
+  imports: [
+    CommonModule,
+    MongooseModule.forFeature([
+      { name: Course.name, schema: CourseSchema },
+      { name: Enrollment.name, schema: EnrollmentSchema },
+      { name: Payment.name, schema: PaymentSchema },
+      { name: Review.name, schema: ReviewSchema },
+      { name: Certificate.name, schema: CertificateSchema },
+    ]),
+    MulterModule.register({
+      fileFilter: (req, file, cb) => {
+        if (!file.mimetype.startsWith('image/')) {
+          return cb(new Error('Only image files are allowed'), false);
+        }
+        cb(null, true);
+      },
+      limits: { fileSize: 5 * 1024 * 1024 },
+    }),
+  ],
+  controllers: [
+    PublicCoursesController,
+    StudentCoursesController,
+    CreateCourseController,
+    UpdateCourseController,
+    GetCourseDetailsController,
+    GetAllCoursesController,
+    DeleteCourseController,
+  ],
+  providers: [
+    AdminCreateCourseService,
+    AdminFindAllCoursesService,
+    AdminFindCourseDetailsService,
+    AdminUpdateCourseService,
 
-        PublicFindCoursesService,
-        PublicFindCourseDetailsService,
+    PublicFindCoursesService,
+    PublicFindCourseDetailsService,
 
-        StudentFindMyCoursesService,
-        StudentFindCourseDetailsService,
-        StudentCancelEnrollmentService,
+    StudentFindMyCoursesService,
+    StudentFindCourseDetailsService,
+    StudentCancelEnrollmentService,
 
-        AdminDeleteCourseService,
-    ],
+    AdminDeleteCourseService,
+  ],
 })
-export class CoursesModule { }
+export class CoursesModule {}

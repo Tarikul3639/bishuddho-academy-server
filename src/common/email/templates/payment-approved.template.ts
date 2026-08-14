@@ -1,27 +1,27 @@
-import { baseTemplate } from "./base-email.template";
+import { baseTemplate } from './base-email.template';
 
 interface PaymentApprovedTemplateOptions {
-    name: string;
+  name: string;
 
-    courseTitle: string;
+  courseTitle: string;
 
-    amount: number;
+  amount: number;
 
-    dashboardUrl: string;
+  dashboardUrl: string;
 }
 
 export function paymentApprovedTemplate({
-    name,
-    courseTitle,
-    amount,
-    dashboardUrl,
+  name,
+  courseTitle,
+  amount,
+  dashboardUrl,
 }: PaymentApprovedTemplateOptions): string {
-    return baseTemplate({
-        title: "Payment Approved",
+  return baseTemplate({
+    title: 'Payment Approved',
 
-        heading: `Congratulations, ${name}!`,
+    heading: `Congratulations, ${name}!`,
 
-        content: `
+    content: `
 <p>
 Your payment has been successfully approved.
 </p>
@@ -44,10 +44,10 @@ We wish you a successful learning journey.
 </p>
 `,
 
-        buttonText: "Go to Dashboard",
+    buttonText: 'Go to Dashboard',
 
-        buttonUrl: dashboardUrl,
-    });
+    buttonUrl: dashboardUrl,
+  });
 }
 
 /**

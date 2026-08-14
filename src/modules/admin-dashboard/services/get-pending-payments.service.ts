@@ -1,13 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
-import { Payment, PaymentStatus } from "../../../database/schemas/payment.schema";
-import { Enrollment } from "../../../database/schemas/enrollment.schema";
-import { Course } from "../../../database/schemas/course.schema";
-import { User } from "../../../database/schemas/user.schema";
+import {
+  Payment,
+  PaymentStatus,
+} from '../../../database/schemas/payment.schema';
+import { Enrollment } from '../../../database/schemas/enrollment.schema';
+import { Course } from '../../../database/schemas/course.schema';
+import { User } from '../../../database/schemas/user.schema';
 
-import { PendingPaymentDto } from "../dto/pending-payment.dto";
+import { PendingPaymentDto } from '../dto/pending-payment.dto';
 
 @Injectable()
 export class GetPendingPaymentsService {
@@ -54,9 +57,7 @@ export class GetPendingPaymentsService {
          Student
       --------------------------------------- */
 
-      const student = await this.userModel
-        .findById(enrollment.userId)
-        .lean();
+      const student = await this.userModel.findById(enrollment.userId).lean();
 
       /* ---------------------------------------
          Course

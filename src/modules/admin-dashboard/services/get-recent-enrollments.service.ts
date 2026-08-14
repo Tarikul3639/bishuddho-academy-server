@@ -1,13 +1,13 @@
-import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
-import { Enrollment } from "../../../database/schemas/enrollment.schema";
-import { User } from "../../../database/schemas/user.schema";
-import { Course } from "../../../database/schemas/course.schema";
-import { Payment } from "../../../database/schemas/payment.schema";
+import { Enrollment } from '../../../database/schemas/enrollment.schema';
+import { User } from '../../../database/schemas/user.schema';
+import { Course } from '../../../database/schemas/course.schema';
+import { Payment } from '../../../database/schemas/payment.schema';
 
-import { RecentEnrollmentDto } from "../dto/recent-enrollment.dto";
+import { RecentEnrollmentDto } from '../dto/recent-enrollment.dto';
 
 @Injectable()
 export class GetRecentEnrollmentsService {
@@ -38,7 +38,9 @@ export class GetRecentEnrollmentsService {
 
     for (const enrollment of enrollments) {
       const user = await this.userModel.findById(enrollment.userId).lean();
-      const course = await this.courseModel.findById(enrollment.courseId).lean();
+      const course = await this.courseModel
+        .findById(enrollment.courseId)
+        .lean();
       const payment = await this.paymentModel
         .findOne({
           enrollmentId: enrollment._id,
@@ -53,7 +55,7 @@ export class GetRecentEnrollmentsService {
         enrollmentId: enrollment._id.toString(),
         studentName: user.name,
         courseName: course.title,
-        method: payment?.method ?? "cash",
+        method: payment?.method ?? 'cash',
         status: enrollment.status,
         date: enrollment.createdAt,
       });

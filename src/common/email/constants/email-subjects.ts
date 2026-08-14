@@ -1,25 +1,24 @@
 export const EmailSubjects = {
-    FORGOT_PASSWORD: "Reset Your Password",
+  FORGOT_PASSWORD: 'Reset Your Password',
 
-    PASSWORD_RESET_SUCCESS: "Your Password Has Been Reset",
+  PASSWORD_RESET_SUCCESS: 'Your Password Has Been Reset',
 
-    VERIFY_EMAIL: "Verify Your Email Address",
+  VERIFY_EMAIL: 'Verify Your Email Address',
 
-    EMAIL_VERIFIED: "Email Verified Successfully",
+  EMAIL_VERIFIED: 'Email Verified Successfully',
 
-    WELCOME: "Welcome to Bishuddho Academy",
+  WELCOME: 'Welcome to Bishuddho Academy',
 
-    ENROLLMENT_SUCCESS: "Course Enrollment Successful",
+  ENROLLMENT_SUCCESS: 'Course Enrollment Successful',
 
-    PAYMENT_APPROVED: "Payment Approved",
+  PAYMENT_APPROVED: 'Payment Approved',
 
-    PAYMENT_REJECTED: "Payment Rejected",
+  PAYMENT_REJECTED: 'Payment Rejected',
 
-    CERTIFICATE_ISSUED: "Your Course Certificate Is Ready",
+  CERTIFICATE_ISSUED: 'Your Course Certificate Is Ready',
 
-    TEACHER_ACCOUNT_CREATED: "Your Teacher Account Is Ready",
+  TEACHER_ACCOUNT_CREATED: 'Your Teacher Account Is Ready',
 } as const;
-
 
 /**
  * Use case

@@ -1,49 +1,49 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class DashboardCourseDto {
-    @ApiProperty()
-    courseId!: string;
+  @ApiProperty()
+  courseId!: string;
 
-    @ApiProperty()
-    title!: string;
+  @ApiProperty()
+  title!: string;
 
-    @ApiProperty()
-    instructor!: string;
+  @ApiProperty()
+  instructor!: string;
 
-    @ApiProperty()
-    schedule!: string;
+  @ApiProperty()
+  schedule!: string;
 
-    @ApiProperty()
-    location!: string;
+  @ApiProperty()
+  location!: string;
 
-    @ApiProperty()
-    duration!: string;
+  @ApiProperty()
+  duration!: string;
 
-    @ApiProperty()
-    status!: string;
+  @ApiProperty()
+  status!: string;
 
-    @ApiProperty()
-    totalSeats!: number;
+  @ApiProperty()
+  totalSeats!: number;
 
-    @ApiProperty()
-    bookedSeats!: number;
+  @ApiProperty()
+  bookedSeats!: number;
 
-    @ApiProperty()
-    lessons!: number;
+  @ApiProperty()
+  lessons!: number;
 
-    @ApiProperty()
-    revenue!: number;
+  @ApiProperty()
+  revenue!: number;
 
-    @ApiProperty({
-        type: String,
-        format: "date-time",
-    })
-    startDate!: Date;
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+  })
+  startDate!: Date;
 }
 
 export class DashboardCoursesResponseDto {
-    @ApiProperty({
-        type: [DashboardCourseDto],
-    })
-    courses!: DashboardCourseDto[];
+  @ApiProperty({
+    type: [DashboardCourseDto],
+  })
+  courses!: DashboardCourseDto[];
 }

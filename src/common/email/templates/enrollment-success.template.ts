@@ -1,27 +1,27 @@
-import { baseTemplate } from "./base-email.template";
+import { baseTemplate } from './base-email.template';
 
 interface EnrollmentSuccessTemplateOptions {
-    name: string;
+  name: string;
 
-    courseTitle: string;
+  courseTitle: string;
 
-    startDate: string;
+  startDate: string;
 
-    dashboardUrl: string;
+  dashboardUrl: string;
 }
 
 export function enrollmentSuccessTemplate({
-    name,
-    courseTitle,
-    startDate,
-    dashboardUrl,
+  name,
+  courseTitle,
+  startDate,
+  dashboardUrl,
 }: EnrollmentSuccessTemplateOptions): string {
-    return baseTemplate({
-        title: "Course Enrollment Successful",
+  return baseTemplate({
+    title: 'Course Enrollment Successful',
 
-        heading: `Congratulations, ${name}!`,
+    heading: `Congratulations, ${name}!`,
 
-        content: `
+    content: `
 <p>
 Your enrollment has been confirmed successfully.
 </p>
@@ -44,12 +44,11 @@ We wish you a wonderful learning experience.
 </p>
 `,
 
-        buttonText: "Go to My Course",
+    buttonText: 'Go to My Course',
 
-        buttonUrl: dashboardUrl,
-    });
+    buttonUrl: dashboardUrl,
+  });
 }
-
 
 /**
  * Use case

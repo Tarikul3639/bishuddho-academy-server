@@ -1,24 +1,22 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+import { EnrollmentStatus } from '../../../database/schemas/enrollment.schema';
 
 import {
-    EnrollmentStatus,
-} from "../../../database/schemas/enrollment.schema";
-
-import {
-    PaymentMethod,
-    PaymentStatus,
-} from "../../../database/schemas/payment.schema";
+  PaymentMethod,
+  PaymentStatus,
+} from '../../../database/schemas/payment.schema';
 
 /* ─────────────────────────────
    CLASS
 ───────────────────────────── */
 
 export class CourseModuleClassDto {
-    @ApiProperty()
-    title!: string;
+  @ApiProperty()
+  title!: string;
 
-    @ApiProperty()
-    session!: string;
+  @ApiProperty()
+  session!: string;
 }
 
 /* ─────────────────────────────
@@ -26,13 +24,13 @@ export class CourseModuleClassDto {
 ───────────────────────────── */
 
 export class CourseModuleDto {
-    @ApiProperty()
-    title!: string;
+  @ApiProperty()
+  title!: string;
 
-    @ApiProperty({
-        type: [CourseModuleClassDto],
-    })
-    classes!: CourseModuleClassDto[];
+  @ApiProperty({
+    type: [CourseModuleClassDto],
+  })
+  classes!: CourseModuleClassDto[];
 }
 
 /* ─────────────────────────────
@@ -40,33 +38,33 @@ export class CourseModuleDto {
 ───────────────────────────── */
 
 export class PublicCoursePaymentDto {
-    @ApiProperty({
-        enum: PaymentMethod,
-    })
-    method!: PaymentMethod;
+  @ApiProperty({
+    enum: PaymentMethod,
+  })
+  method!: PaymentMethod;
 
-    @ApiPropertyOptional()
-    trxId?: string;
+  @ApiPropertyOptional()
+  trxId?: string;
 
-    @ApiProperty()
-    amount!: number;
+  @ApiProperty()
+  amount!: number;
 
-    @ApiProperty()
-    paidAt!: string;
+  @ApiProperty()
+  paidAt!: string;
 
-    @ApiProperty({
-        enum: PaymentStatus,
-    })
-    status!: PaymentStatus;
+  @ApiProperty({
+    enum: PaymentStatus,
+  })
+  status!: PaymentStatus;
 
-    @ApiPropertyOptional()
-    verifiedBy?: string;
+  @ApiPropertyOptional()
+  verifiedBy?: string;
 
-    @ApiPropertyOptional()
-    verifiedAt?: string;
+  @ApiPropertyOptional()
+  verifiedAt?: string;
 
-    @ApiPropertyOptional()
-    rejectionReason?: string;
+  @ApiPropertyOptional()
+  rejectionReason?: string;
 }
 
 /* ─────────────────────────────
@@ -74,86 +72,86 @@ export class PublicCoursePaymentDto {
 ───────────────────────────── */
 
 export class PublicCourseDetailsResponseDto {
-    @ApiProperty()
-    courseId!: string;
+  @ApiProperty()
+  courseId!: string;
 
-    @ApiProperty()
-    title!: string;
+  @ApiProperty()
+  title!: string;
 
-    @ApiProperty()
-    tagline!: string;
+  @ApiProperty()
+  tagline!: string;
 
-    @ApiProperty()
-    description!: string;
+  @ApiProperty()
+  description!: string;
 
-    @ApiProperty()
-    thumbnailUrl!: string;
+  @ApiProperty()
+  thumbnailUrl!: string;
 
-    @ApiProperty()
-    instructor!: string;
+  @ApiProperty()
+  instructor!: string;
 
-    @ApiProperty()
-    averageRating!: number;
+  @ApiProperty()
+  averageRating!: number;
 
-    @ApiProperty()
-    reviewCount!: number;
+  @ApiProperty()
+  reviewCount!: number;
 
-    @ApiProperty()
-    students!: number;
+  @ApiProperty()
+  students!: number;
 
-    @ApiProperty()
-    price!: number;
+  @ApiProperty()
+  price!: number;
 
-    @ApiProperty()
-    originalPrice!: number;
+  @ApiProperty()
+  originalPrice!: number;
 
-    @ApiProperty()
-    discount!: number;
+  @ApiProperty()
+  discount!: number;
 
-    @ApiProperty()
-    daysLeft!: number;
+  @ApiProperty()
+  daysLeft!: number;
 
-    @ApiProperty()
-    duration!: string;
+  @ApiProperty()
+  duration!: string;
 
-    @ApiProperty()
-    lessons!: number;
+  @ApiProperty()
+  lessons!: number;
 
-    @ApiProperty()
-    totalSeats!: number;
+  @ApiProperty()
+  totalSeats!: number;
 
-    @ApiProperty()
-    bookedSeats!: number;
+  @ApiProperty()
+  bookedSeats!: number;
 
-    @ApiProperty()
-    schedule!: string;
+  @ApiProperty()
+  schedule!: string;
 
-    @ApiProperty()
-    location!: string;
+  @ApiProperty()
+  location!: string;
 
-    @ApiProperty()
-    startDate!: string;
+  @ApiProperty()
+  startDate!: string;
 
-    @ApiProperty()
-    isEnrolled!: boolean;
+  @ApiProperty()
+  isEnrolled!: boolean;
 
-    @ApiPropertyOptional({
-        enum: EnrollmentStatus,
-    })
-    enrollmentStatus?: EnrollmentStatus;
+  @ApiPropertyOptional({
+    enum: EnrollmentStatus,
+  })
+  enrollmentStatus?: EnrollmentStatus;
 
-    @ApiPropertyOptional({
-        type: PublicCoursePaymentDto,
-    })
-    payment?: PublicCoursePaymentDto;
+  @ApiPropertyOptional({
+    type: PublicCoursePaymentDto,
+  })
+  payment?: PublicCoursePaymentDto;
 
-    @ApiProperty({
-        type: [String],
-    })
-    includes!: string[];
+  @ApiProperty({
+    type: [String],
+  })
+  includes!: string[];
 
-    @ApiProperty({
-        type: [CourseModuleDto],
-    })
-    modules!: CourseModuleDto[];
+  @ApiProperty({
+    type: [CourseModuleDto],
+  })
+  modules!: CourseModuleDto[];
 }

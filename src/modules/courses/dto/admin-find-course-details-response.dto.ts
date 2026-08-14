@@ -1,23 +1,23 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { EnrollmentStatus } from "../../../database/schemas/enrollment.schema";
+import { ApiProperty } from '@nestjs/swagger';
+import { EnrollmentStatus } from '../../../database/schemas/enrollment.schema';
 import {
-    PaymentMethod,
-    PaymentStatus,
-} from "../../../database/schemas/payment.schema";
+  PaymentMethod,
+  PaymentStatus,
+} from '../../../database/schemas/payment.schema';
 
 /* ─────────────────────────────
    CLASS
 ───────────────────────────── */
 
 export class CourseClassDto {
-    @ApiProperty()
-    title!: string;
+  @ApiProperty()
+  title!: string;
 
-    @ApiProperty()
-    session!: string;
+  @ApiProperty()
+  session!: string;
 
-    @ApiProperty({ required: false })
-    completed?: boolean;
+  @ApiProperty({ required: false })
+  completed?: boolean;
 }
 
 /* ─────────────────────────────
@@ -25,13 +25,13 @@ export class CourseClassDto {
 ───────────────────────────── */
 
 export class CourseModuleDto {
-    @ApiProperty()
-    title!: string;
+  @ApiProperty()
+  title!: string;
 
-    @ApiProperty({
-        type: [CourseClassDto],
-    })
-    classes!: CourseClassDto[];
+  @ApiProperty({
+    type: [CourseClassDto],
+  })
+  classes!: CourseClassDto[];
 }
 
 /* ─────────────────────────────
@@ -39,14 +39,14 @@ export class CourseModuleDto {
 ───────────────────────────── */
 
 export class StudentUserDto {
-    @ApiProperty()
-    id!: string;
+  @ApiProperty()
+  id!: string;
 
-    @ApiProperty()
-    name!: string;
+  @ApiProperty()
+  name!: string;
 
-    @ApiProperty()
-    email!: string;
+  @ApiProperty()
+  email!: string;
 }
 
 /* ─────────────────────────────
@@ -54,16 +54,16 @@ export class StudentUserDto {
 ───────────────────────────── */
 
 export class StudentEnrollmentDto {
-    @ApiProperty()
-    enrollmentId!: string;
+  @ApiProperty()
+  enrollmentId!: string;
 
-    @ApiProperty()
-    currentSession!: number;
+  @ApiProperty()
+  currentSession!: number;
 
-    @ApiProperty({
-        enum: EnrollmentStatus,
-    })
-    status!: EnrollmentStatus;
+  @ApiProperty({
+    enum: EnrollmentStatus,
+  })
+  status!: EnrollmentStatus;
 }
 
 /* ─────────────────────────────
@@ -71,44 +71,44 @@ export class StudentEnrollmentDto {
 ───────────────────────────── */
 
 export class StudentPaymentDto {
-    @ApiProperty()
-    paymentId!: string;
+  @ApiProperty()
+  paymentId!: string;
 
-    @ApiProperty({
-        enum: PaymentMethod,
-    })
-    method!: PaymentMethod;
+  @ApiProperty({
+    enum: PaymentMethod,
+  })
+  method!: PaymentMethod;
 
-    @ApiProperty({
-        required: false,
-    })
-    trxId?: string;
+  @ApiProperty({
+    required: false,
+  })
+  trxId?: string;
 
-    @ApiProperty()
-    amount!: number;
+  @ApiProperty()
+  amount!: number;
 
-    @ApiProperty()
-    paidAt!: string;
+  @ApiProperty()
+  paidAt!: string;
 
-    @ApiProperty({
-        enum: PaymentStatus,
-    })
-    status!: PaymentStatus;
+  @ApiProperty({
+    enum: PaymentStatus,
+  })
+  status!: PaymentStatus;
 
-    @ApiProperty({
-        required: false,
-    })
-    verifiedBy?: string;
+  @ApiProperty({
+    required: false,
+  })
+  verifiedBy?: string;
 
-    @ApiProperty({
-        required: false,
-    })
-    verifiedAt?: string;
+  @ApiProperty({
+    required: false,
+  })
+  verifiedAt?: string;
 
-    @ApiProperty({
-        required: false,
-    })
-    rejectionReason?: string;
+  @ApiProperty({
+    required: false,
+  })
+  rejectionReason?: string;
 }
 
 /* ─────────────────────────────
@@ -116,21 +116,21 @@ export class StudentPaymentDto {
 ───────────────────────────── */
 
 export class StudentDto {
-    @ApiProperty({
-        type: StudentUserDto,
-    })
-    user!: StudentUserDto;
+  @ApiProperty({
+    type: StudentUserDto,
+  })
+  user!: StudentUserDto;
 
-    @ApiProperty({
-        type: StudentEnrollmentDto,
-    })
-    enrollment!: StudentEnrollmentDto;
+  @ApiProperty({
+    type: StudentEnrollmentDto,
+  })
+  enrollment!: StudentEnrollmentDto;
 
-    @ApiProperty({
-        type: StudentPaymentDto,
-        required: false,
-    })
-    payment?: StudentPaymentDto;
+  @ApiProperty({
+    type: StudentPaymentDto,
+    required: false,
+  })
+  payment?: StudentPaymentDto;
 }
 
 /* ─────────────────────────────
@@ -138,81 +138,81 @@ export class StudentDto {
 ───────────────────────────── */
 
 export class AdminFindCourseDetailsResponseDto {
-    @ApiProperty()
-    courseId!: string;
+  @ApiProperty()
+  courseId!: string;
 
-    @ApiProperty()
-    title!: string;
+  @ApiProperty()
+  title!: string;
 
-    @ApiProperty()
-    tagline!: string;
+  @ApiProperty()
+  tagline!: string;
 
-    @ApiProperty()
-    description!: string;
+  @ApiProperty()
+  description!: string;
 
-    @ApiProperty()
-    thumbnailUrl!: string;
+  @ApiProperty()
+  thumbnailUrl!: string;
 
-    @ApiProperty()
-    instructor!: string;
+  @ApiProperty()
+  instructor!: string;
 
-    @ApiProperty()
-    schedule!: string;
+  @ApiProperty()
+  schedule!: string;
 
-    @ApiProperty()
-    location!: string;
+  @ApiProperty()
+  location!: string;
 
-    @ApiProperty()
-    startDate!: string;
+  @ApiProperty()
+  startDate!: string;
 
-    @ApiProperty()
-    duration!: string;
+  @ApiProperty()
+  duration!: string;
 
-    @ApiProperty()
-    totalSeats!: number;
+  @ApiProperty()
+  totalSeats!: number;
 
-    @ApiProperty()
-    bookedSeats!: number;
+  @ApiProperty()
+  bookedSeats!: number;
 
-    @ApiProperty()
-    price!: number;
+  @ApiProperty()
+  price!: number;
 
-    @ApiProperty()
-    originalPrice!: number;
+  @ApiProperty()
+  originalPrice!: number;
 
-    @ApiProperty({
-        nullable: true,
-    })
-    discountStarts!: string | null;
+  @ApiProperty({
+    nullable: true,
+  })
+  discountStarts!: string | null;
 
-    @ApiProperty({
-        nullable: true,
-    })
-    discountEnds!: string | null;
+  @ApiProperty({
+    nullable: true,
+  })
+  discountEnds!: string | null;
 
-    @ApiProperty({
-        enum: ["active", "upcoming", "completed"],
-    })
-    status!: "active" | "upcoming" | "completed";
+  @ApiProperty({
+    enum: ['active', 'upcoming', 'completed'],
+  })
+  status!: 'active' | 'upcoming' | 'completed';
 
-    @ApiProperty()
-    revenue!: number;
+  @ApiProperty()
+  revenue!: number;
 
-    @ApiProperty()
-    lessons!: number;
+  @ApiProperty()
+  lessons!: number;
 
-    @ApiProperty({
-        type: [String],
-    })
-    includes!: string[];
+  @ApiProperty({
+    type: [String],
+  })
+  includes!: string[];
 
-    @ApiProperty({
-        type: [CourseModuleDto],
-    })
-    modules!: CourseModuleDto[];
+  @ApiProperty({
+    type: [CourseModuleDto],
+  })
+  modules!: CourseModuleDto[];
 
-    @ApiProperty({
-        type: [StudentDto],
-    })
-    students!: StudentDto[];
+  @ApiProperty({
+    type: [StudentDto],
+  })
+  students!: StudentDto[];
 }

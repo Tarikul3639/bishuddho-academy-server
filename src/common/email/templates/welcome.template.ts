@@ -1,21 +1,21 @@
-import { baseTemplate } from "./base-email.template";
+import { baseTemplate } from './base-email.template';
 
 interface WelcomeTemplateOptions {
-    name: string;
+  name: string;
 
-    loginUrl: string;
+  loginUrl: string;
 }
 
 export function welcomeTemplate({
-    name,
-    loginUrl,
+  name,
+  loginUrl,
 }: WelcomeTemplateOptions): string {
-    return baseTemplate({
-        title: "Welcome to Bishuddho Academy",
+  return baseTemplate({
+    title: 'Welcome to Bishuddho Academy',
 
-        heading: `Welcome, ${name}!`,
+    heading: `Welcome, ${name}!`,
 
-        content: `
+    content: `
 <p>
 Your account has been successfully created.
 Welcome to <strong>Bishuddho Academy</strong>.
@@ -31,10 +31,10 @@ We wish you a successful learning journey.
 </p>
 `,
 
-        buttonText: "Go to Login",
+    buttonText: 'Go to Login',
 
-        buttonUrl: loginUrl,
-    });
+    buttonUrl: loginUrl,
+  });
 }
 
 /**

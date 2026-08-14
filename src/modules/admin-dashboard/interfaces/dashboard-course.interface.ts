@@ -1,25 +1,25 @@
 export interface IDashboardCourse {
-    courseId: string;
+  courseId: string;
 
-    title: string;
+  title: string;
 
-    instructor: string;
+  instructor: string;
 
-    schedule: string;
+  schedule: string;
 
-    location: string;
+  location: string;
 
-    duration: string;
+  duration: string;
 
-    status: string;
+  status: string;
 
-    totalSeats: number;
+  totalSeats: number;
 
-    bookedSeats: number;
+  bookedSeats: number;
 
-    lessons: number;
+  lessons: number;
 
-    revenue: number;
+  revenue: number;
 
-    startDate: Date;
+  startDate: Date;
 }

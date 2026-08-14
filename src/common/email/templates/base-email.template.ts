@@ -80,7 +80,7 @@ export function baseTemplate({
                                     </td>
                                 </tr>
                             </table>`
-                                : ""
+                                : ''
                             }
                         </td>
                     </tr>

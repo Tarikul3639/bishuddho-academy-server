@@ -1,30 +1,30 @@
-import { baseTemplate } from "./base-email.template";
+import { baseTemplate } from './base-email.template';
 
 interface PaymentRejectedTemplateOptions {
-    name: string;
+  name: string;
 
-    courseTitle: string;
+  courseTitle: string;
 
-    amount: number;
+  amount: number;
 
-    reason: string;
+  reason: string;
 
-    paymentUrl: string;
+  paymentUrl: string;
 }
 
 export function paymentRejectedTemplate({
-    name,
-    courseTitle,
-    amount,
-    reason,
-    paymentUrl,
+  name,
+  courseTitle,
+  amount,
+  reason,
+  paymentUrl,
 }: PaymentRejectedTemplateOptions): string {
-    return baseTemplate({
-        title: "Payment Rejected",
+  return baseTemplate({
+    title: 'Payment Rejected',
 
-        heading: `Hello, ${name}`,
+    heading: `Hello, ${name}`,
 
-        content: `
+    content: `
 <p>
 Unfortunately, your payment could not be approved.
 </p>
@@ -47,12 +47,11 @@ If you believe this was a mistake, contact our support team.
 </p>
 `,
 
-        buttonText: "Try Again",
+    buttonText: 'Try Again',
 
-        buttonUrl: paymentUrl,
-    });
+    buttonUrl: paymentUrl,
+  });
 }
-
 
 /**
  * Use case

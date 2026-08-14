@@ -8,27 +8,27 @@ import { FeatureTeacherDto } from '../dto/feature-teacher.dto';
 
 @Injectable()
 export class FeatureTeacherService {
-    constructor(
-        @InjectModel(Teacher.name) private readonly teacherModel: Model<Teacher>,
-    ) {}
+  constructor(
+    @InjectModel(Teacher.name) private readonly teacherModel: Model<Teacher>,
+  ) {}
 
-    async feature(teacherId: string, dto: FeatureTeacherDto) {
-        const teacher = await this.teacherModel.findById(teacherId).lean().exec();
+  async feature(teacherId: string, dto: FeatureTeacherDto) {
+    const teacher = await this.teacherModel.findById(teacherId).lean().exec();
 
-        if (!teacher) {
-            throw new NotFoundException(`Teacher with ID "${teacherId}" not found`);
-        }
-
-        await this.teacherModel
-            .findByIdAndUpdate(teacherId, { $set: { featured: dto.featured } })
-            .exec();
-
-        return {
-            teacherId,
-            featured: dto.featured,
-            message: dto.featured
-                ? 'Teacher featured successfully'
-                : 'Teacher unfeatured successfully',
-        };
+    if (!teacher) {
+      throw new NotFoundException(`Teacher with ID "${teacherId}" not found`);
     }
+
+    await this.teacherModel
+      .findByIdAndUpdate(teacherId, { $set: { featured: dto.featured } })
+      .exec();
+
+    return {
+      teacherId,
+      featured: dto.featured,
+      message: dto.featured
+        ? 'Teacher featured successfully'
+        : 'Teacher unfeatured successfully',
+    };
+  }
 }

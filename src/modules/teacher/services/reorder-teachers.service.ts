@@ -8,20 +8,20 @@ import { ReorderTeachersDto } from '../dto/reorder-teachers.dto';
 
 @Injectable()
 export class ReorderTeachersService {
-    constructor(
-        @InjectModel(Teacher.name) private readonly teacherModel: Model<Teacher>,
-    ) {}
+  constructor(
+    @InjectModel(Teacher.name) private readonly teacherModel: Model<Teacher>,
+  ) {}
 
-    async reorder(dto: ReorderTeachersDto) {
-        const updates = dto.items.map(({ teacherId, displayOrder }) =>
-            this.teacherModel
-                .findByIdAndUpdate(teacherId, { $set: { displayOrder } })
-                .lean()
-                .exec(),
-        );
+  async reorder(dto: ReorderTeachersDto) {
+    const updates = dto.items.map(({ teacherId, displayOrder }) =>
+      this.teacherModel
+        .findByIdAndUpdate(teacherId, { $set: { displayOrder } })
+        .lean()
+        .exec(),
+    );
 
-        await Promise.all(updates);
+    await Promise.all(updates);
 
-        return { message: 'Teacher order updated successfully' };
-    }
+    return { message: 'Teacher order updated successfully' };
+  }
 }

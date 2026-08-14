@@ -1,57 +1,47 @@
-import {
-    Controller,
-    Get,
-    Param,
-    Res,
-    UseGuards,
-} from "@nestjs/common";
+import { Controller, Get, Param, Res, UseGuards } from '@nestjs/common';
 
-import type { Response } from "express";
+import type { Response } from 'express';
 
 import {
-    ApiBearerAuth,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
-} from "@nestjs/swagger";
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
-import { CurrentUser } from "../../auth/decorators/current-user.decorator";
-import { JwtAuthGuard } from "../../auth/guards/jwt-auth.guard";
-import type { JwtPayload } from "../../auth/interface/jwt-payload";
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import type { JwtPayload } from '../../auth/interface/jwt-payload';
 
-import { DownloadCertificateService } from "../services/download-certificate.service";
+import { DownloadCertificateService } from '../services/download-certificate.service';
 
-@ApiTags("Certificates")
-@Controller("certificates")
+@ApiTags('Certificates')
+@Controller('certificates')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class DownloadCertificateController {
-    constructor(
-        private readonly downloadCertificateService: DownloadCertificateService,
-    ) { }
+  constructor(
+    private readonly downloadCertificateService: DownloadCertificateService,
+  ) {}
 
-    @Get(":certificateId/download")
-    @ApiOperation({
-        summary: "Download certificate",
-    })
-    @ApiResponse({
-        status: 200,
-        description: "Certificate downloaded successfully",
-    })
-    async download(
-        @Param("certificateId")
-        certificateId: string,
+  @Get(':certificateId/download')
+  @ApiOperation({
+    summary: 'Download certificate',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Certificate downloaded successfully',
+  })
+  async download(
+    @Param('certificateId')
+    certificateId: string,
 
-        @CurrentUser()
-        user: JwtPayload,
+    @CurrentUser()
+    user: JwtPayload,
 
-        @Res()
-        res: Response,
-    ): Promise<void> {
-        await this.downloadCertificateService.execute(
-            certificateId,
-            user,
-            res,
-        );
-    }
+    @Res()
+    res: Response,
+  ): Promise<void> {
+    await this.downloadCertificateService.execute(certificateId, user, res);
+  }
 }

@@ -1,13 +1,10 @@
-import {
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
-import { Teacher } from "../../../database/schemas/teacher.schema";
-import { UpdateTeacherDto } from "../dto/update-teacher.dto";
-import { CloudinaryService } from "../../../common/cloudinary/cloudinary.service";
+import { Teacher } from '../../../database/schemas/teacher.schema';
+import { UpdateTeacherDto } from '../dto/update-teacher.dto';
+import { CloudinaryService } from '../../../common/cloudinary/cloudinary.service';
 
 @Injectable()
 export class UpdateTeacherService {
@@ -33,7 +30,7 @@ export class UpdateTeacherService {
     if (profileImageFile) {
       const uploaded = await this.cloudinaryService.replaceFile(
         profileImageFile,
-        "teachers/profiles",
+        'teachers/profiles',
         teacher.profileImagePublicId,
       );
 

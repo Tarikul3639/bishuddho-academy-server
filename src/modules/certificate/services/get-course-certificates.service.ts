@@ -1,19 +1,16 @@
-import {
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 
-import { Course } from "../../../database/schemas/course.schema";
-import { Enrollment } from "../../../database/schemas/enrollment.schema";
-import { Certificate } from "../../../database/schemas/certificate.schema";
-import { User } from "../../../database/schemas/user.schema";
+import { Course } from '../../../database/schemas/course.schema';
+import { Enrollment } from '../../../database/schemas/enrollment.schema';
+import { Certificate } from '../../../database/schemas/certificate.schema';
+import { User } from '../../../database/schemas/user.schema';
 
 import {
   CourseCertificateStudentDto,
   CourseCertificateStudentsResponseDto,
-} from "../dto/course-certificate-student.dto";
+} from '../dto/course-certificate-student.dto';
 
 @Injectable()
 export class GetCourseCertificatesService {
@@ -39,7 +36,7 @@ export class GetCourseCertificatesService {
     );
 
     if (!course) {
-      throw new NotFoundException("Course not found.");
+      throw new NotFoundException('Course not found.');
     }
 
     const enrollments = await this.enrollmentModel

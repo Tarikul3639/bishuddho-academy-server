@@ -1,121 +1,100 @@
-import {
-    Body,
-    Controller,
-    Get,
-    Post,
-    Res,
-    UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 
-import { ConfigService } from "@nestjs/config";
+import { ConfigService } from '@nestjs/config';
 
-import {
-    ApiBody,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
-} from "@nestjs/swagger";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import type { Response } from "express";
+import type { Response } from 'express';
 
-import { type StringValue } from "ms";
+import { type StringValue } from 'ms';
 
-import { AuthService } from "./auth.service";
+import { AuthService } from './auth.service';
 
-import { LoginDto } from "./dto/login.dto";
-import { LoginResponseDto } from "./dto/login-response.dto";
+import { LoginDto } from './dto/login.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
 
-import { JwtAuthGuard } from "./guards/jwt-auth.guard";
-import { CurrentUser } from "./decorators/current-user.decorator";
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
 
-import {
-    clearAuthCookie,
-    setAuthCookie,
-} from "./utils/auth-cookies";
+import { clearAuthCookie, setAuthCookie } from './utils/auth-cookies';
 
-@ApiTags("Authentication")
-@Controller("auth")
+@ApiTags('Authentication')
+@Controller('auth')
 export class AuthController {
-    constructor(
-        private readonly authService: AuthService,
-        private readonly configService: ConfigService,
-    ) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
-    /* ─────────────────────────────
+  /* ─────────────────────────────
          LOGIN
     ───────────────────────────── */
 
-    @Post("login")
-    @ApiOperation({
-        summary: "Log in user",
+  @Post('login')
+  @ApiOperation({
+    summary: 'Log in user',
+  })
+  @ApiBody({
+    type: LoginDto,
+  })
+  @ApiResponse({
+    status: 200,
+    type: LoginResponseDto,
+  })
+  async login(
+    @Body()
+    loginDto: LoginDto,
+
+    @Res({
+      passthrough: true,
     })
-    @ApiBody({
-        type: LoginDto,
-    })
-    @ApiResponse({
-        status: 200,
-        type: LoginResponseDto,
-    })
-    async login(
-        @Body()
-        loginDto: LoginDto,
+    res: Response,
+  ): Promise<LoginResponseDto> {
+    const result = await this.authService.login(loginDto);
 
-        @Res({
-            passthrough: true,
-        })
-        res: Response,
-    ): Promise<LoginResponseDto> {
-        const result = await this.authService.login(loginDto);
+    const expiresIn =
+      this.configService.get<StringValue>('JWT_ACCESS_EXPIRES_IN') ?? '7d';
 
-        const expiresIn =
-            this.configService.get<StringValue>(
-                "JWT_ACCESS_EXPIRES_IN",
-            ) ?? "7d";
+    setAuthCookie(res, result.accessToken, expiresIn);
 
-        setAuthCookie(
-            res,
-            result.accessToken,
-            expiresIn,
-        );
+    return result;
+  }
 
-        return result;
-    }
-
-    /* ─────────────────────────────
+  /* ─────────────────────────────
          LOGOUT
     ───────────────────────────── */
 
-    @Post("logout")
-    @ApiOperation({
-        summary: "Logout user",
+  @Post('logout')
+  @ApiOperation({
+    summary: 'Logout user',
+  })
+  logout(
+    @Res({
+      passthrough: true,
     })
-    logout(
-        @Res({
-            passthrough: true,
-        })
-        res: Response,
-    ) {
-        clearAuthCookie(res);
+    res: Response,
+  ) {
+    clearAuthCookie(res);
 
-        return {
-            success: true,
-            message: "Logout successful",
-        };
-    }
+    return {
+      success: true,
+      message: 'Logout successful',
+    };
+  }
 
-    /* ─────────────────────────────
+  /* ─────────────────────────────
          CURRENT USER
     ───────────────────────────── */
 
-    @Get("me")
-    @UseGuards(JwtAuthGuard)
-    @ApiOperation({
-        summary: "Get current logged in user",
-    })
-    async me(
-        @CurrentUser("userId")
-        userId: string,
-    ) {
-        return this.authService.findUserById(userId);
-    }
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Get current logged in user',
+  })
+  async me(
+    @CurrentUser('userId')
+    userId: string,
+  ) {
+    return this.authService.findUserById(userId);
+  }
 }

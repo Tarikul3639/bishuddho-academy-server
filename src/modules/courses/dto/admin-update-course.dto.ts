@@ -1,7 +1,5 @@
-import { PartialType } from "@nestjs/swagger";
+import { PartialType } from '@nestjs/swagger';
 
-import { AdminCreateCourseDto } from "./admin-create-course.dto";
+import { AdminCreateCourseDto } from './admin-create-course.dto';
 
-export class AdminUpdateCourseDto extends PartialType(
-    AdminCreateCourseDto,
-) { }
+export class AdminUpdateCourseDto extends PartialType(AdminCreateCourseDto) {}

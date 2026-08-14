@@ -1,25 +1,25 @@
 // dto/public-course-response.dto.ts
 
-import { CourseStatus } from "../../../database/schemas/course.schema";
+import { CourseStatus } from '../../../database/schemas/course.schema';
 
 export class PublicCourseResponseDto {
-    courseId!: string;
+  courseId!: string;
 
-    title!: string;
+  title!: string;
 
-    tagline!: string;
+  tagline!: string;
 
-    thumbnailUrl!: string;
+  thumbnailUrl!: string;
 
-    instructor!: string;
+  instructor!: string;
 
-    price!: number;
+  price!: number;
 
-    originalPrice!: number;
+  originalPrice!: number;
 
-    averageRating!: number;
+  averageRating!: number;
 
-    reviewCount!: number;
+  reviewCount!: number;
 
-    status!: CourseStatus;
+  status!: CourseStatus;
 }

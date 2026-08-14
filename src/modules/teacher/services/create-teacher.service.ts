@@ -1,13 +1,10 @@
-import {
-  Injectable,
-  ConflictException,
-} from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Injectable, ConflictException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
-import { Teacher } from "../../../database/schemas/teacher.schema";
-import { CreateTeacherDto } from "../dto/create-teacher.dto";
-import { CloudinaryService } from "../../../common/cloudinary/cloudinary.service";
+import { Teacher } from '../../../database/schemas/teacher.schema';
+import { CreateTeacherDto } from '../dto/create-teacher.dto';
+import { CloudinaryService } from '../../../common/cloudinary/cloudinary.service';
 
 @Injectable()
 export class CreateTeacherService {
@@ -29,13 +26,13 @@ export class CreateTeacherService {
       );
     }
 
-    let profileImage = "";
-    let profileImagePublicId = "";
+    let profileImage = '';
+    let profileImagePublicId = '';
 
     if (profileImageFile) {
       const uploaded = await this.cloudinaryService.uploadFile(
         profileImageFile,
-        "teachers/profiles",
+        'teachers/profiles',
       );
 
       profileImage = uploaded.secureUrl;

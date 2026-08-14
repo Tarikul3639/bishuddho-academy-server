@@ -1,10 +1,10 @@
 // service/admin-purchases.service.ts
 
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
-import { Payment } from "../../../database/schemas/payment.schema";
+import { Payment } from '../../../database/schemas/payment.schema';
 
 @Injectable()
 export class AdminPurchasesService {
@@ -13,7 +13,11 @@ export class AdminPurchasesService {
     private readonly paymentModel: Model<Payment>,
   ) {}
 
-  async findAll(filter?: { status?: string; method?: string; courseId?: string }) {
+  async findAll(filter?: {
+    status?: string;
+    method?: string;
+    courseId?: string;
+  }) {
     const paymentQuery: any = {};
 
     if (filter?.status) paymentQuery.status = filter.status;
@@ -22,10 +26,10 @@ export class AdminPurchasesService {
     const payments = await this.paymentModel
       .find(paymentQuery)
       .populate({
-        path: "enrollmentId",
+        path: 'enrollmentId',
         populate: [
-          { path: "courseId", select: "title thumbnailUrl" },
-          { path: "userId", select: "name email" },
+          { path: 'courseId', select: 'title thumbnailUrl' },
+          { path: 'userId', select: 'name email' },
         ],
       })
       .sort({ createdAt: -1 })
@@ -46,13 +50,13 @@ export class AdminPurchasesService {
 
       return {
         id: payment._id.toString(),
-        enrollmentId: enrollment?._id?.toString() || "",
-        courseId: course?._id?.toString() || "",
-        courseTitle: course?.title || "Unknown Course",
-        courseThumbnail: course?.thumbnailUrl || "",
-        studentId: user?._id?.toString() || "",
-        studentName: user?.name || "Unknown",
-        studentEmail: user?.email || "",
+        enrollmentId: enrollment?._id?.toString() || '',
+        courseId: course?._id?.toString() || '',
+        courseTitle: course?.title || 'Unknown Course',
+        courseThumbnail: course?.thumbnailUrl || '',
+        studentId: user?._id?.toString() || '',
+        studentName: user?.name || 'Unknown',
+        studentEmail: user?.email || '',
         method: payment.method,
         trxId: payment.trxId || null,
         amount: payment.amount,
@@ -71,17 +75,17 @@ export class AdminPurchasesService {
     const payment = await this.paymentModel
       .findById(id)
       .populate({
-        path: "enrollmentId",
+        path: 'enrollmentId',
         populate: [
-          { path: "courseId", select: "title thumbnailUrl price" },
-          { path: "userId", select: "name email phone" },
+          { path: 'courseId', select: 'title thumbnailUrl price' },
+          { path: 'userId', select: 'name email phone' },
         ],
       })
       .lean()
       .exec();
 
     if (!payment) {
-      throw new NotFoundException("Purchase record not found");
+      throw new NotFoundException('Purchase record not found');
     }
 
     const enrollment: any = payment.enrollmentId;
@@ -90,14 +94,14 @@ export class AdminPurchasesService {
 
     return {
       id: payment._id.toString(),
-      enrollmentId: enrollment?._id?.toString() || "",
-      courseId: course?._id?.toString() || "",
-      courseTitle: course?.title || "Unknown Course",
-      courseThumbnail: course?.thumbnailUrl || "",
+      enrollmentId: enrollment?._id?.toString() || '',
+      courseId: course?._id?.toString() || '',
+      courseTitle: course?.title || 'Unknown Course',
+      courseThumbnail: course?.thumbnailUrl || '',
       coursePrice: course?.price || 0,
-      studentId: user?._id?.toString() || "",
-      studentName: user?.name || "Unknown",
-      studentEmail: user?.email || "",
+      studentId: user?._id?.toString() || '',
+      studentName: user?.name || 'Unknown',
+      studentEmail: user?.email || '',
       studentPhone: user?.phone || null,
       method: payment.method,
       trxId: payment.trxId || null,

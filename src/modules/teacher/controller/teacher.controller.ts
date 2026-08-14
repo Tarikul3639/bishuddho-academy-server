@@ -1,20 +1,16 @@
 // teacher.controller.ts
 
 import {
-    Controller,
-    Get,
-    Param,
-    Body,
-    Patch,
-    Delete,
-    Query,
+  Controller,
+  Get,
+  Param,
+  Body,
+  Patch,
+  Delete,
+  Query,
 } from '@nestjs/common';
 
-import {
-    ApiTags,
-    ApiOperation,
-    ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 import { DeleteTeacherService } from '../services/delete-teacher.service';
 import { GetTeachersService } from '../services/get-teachers.service';
@@ -35,73 +31,73 @@ import { ChangeStatusDto } from '../dto/change-status.dto';
 @ApiTags('Admin Teachers')
 @Controller('admin/teachers')
 export class AdminTeacherController {
-    constructor(
-        private readonly deleteTeacherService: DeleteTeacherService,
-        private readonly getTeachersService: GetTeachersService,
-        private readonly getTeacherDetailsService: GetTeacherDetailsService,
-        private readonly reorderTeachersService: ReorderTeachersService,
-        private readonly featureTeacherService: FeatureTeacherService,
-        private readonly changeStatusService: ChangeStatusService,
-    ) {}
+  constructor(
+    private readonly deleteTeacherService: DeleteTeacherService,
+    private readonly getTeachersService: GetTeachersService,
+    private readonly getTeacherDetailsService: GetTeacherDetailsService,
+    private readonly reorderTeachersService: ReorderTeachersService,
+    private readonly featureTeacherService: FeatureTeacherService,
+    private readonly changeStatusService: ChangeStatusService,
+  ) {}
 
-    /* GET ALL */
-    @Get()
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Get all teachers (admin)' })
-    findAll(@Query() query: GetTeachersDto) {
-        return this.getTeachersService.findAll(query);
-    }
+  /* GET ALL */
+  @Get()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all teachers (admin)' })
+  findAll(@Query() query: GetTeachersDto) {
+    return this.getTeachersService.findAll(query);
+  }
 
-    /* GET ONE */
+  /* GET ONE */
 
-    @Get(':teacherId')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Get teacher details by ID (admin)' })
-    findOne(@Param('teacherId') teacherId: string) {
-        return this.getTeacherDetailsService.findByIdAdmin(teacherId);
-    }
+  @Get(':teacherId')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get teacher details by ID (admin)' })
+  findOne(@Param('teacherId') teacherId: string) {
+    return this.getTeacherDetailsService.findByIdAdmin(teacherId);
+  }
 
-    /* DELETE */
+  /* DELETE */
 
-    @Delete(':teacherId')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Delete teacher' })
-    remove(@Param('teacherId') teacherId: string) {
-        return this.deleteTeacherService.delete(teacherId);
-    }
+  @Delete(':teacherId')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete teacher' })
+  remove(@Param('teacherId') teacherId: string) {
+    return this.deleteTeacherService.delete(teacherId);
+  }
 
-    /* REORDER */
+  /* REORDER */
 
-    @Patch('action/reorder')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Reorder teachers' })
-    reorder(@Body() dto: ReorderTeachersDto) {
-        return this.reorderTeachersService.reorder(dto);
-    }
+  @Patch('action/reorder')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Reorder teachers' })
+  reorder(@Body() dto: ReorderTeachersDto) {
+    return this.reorderTeachersService.reorder(dto);
+  }
 
-    /* FEATURE */
+  /* FEATURE */
 
-    @Patch(':teacherId/feature')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Feature / Unfeature teacher' })
-    feature(
-        @Param('teacherId') teacherId: string,
-        @Body() dto: FeatureTeacherDto,
-    ) {
-        return this.featureTeacherService.feature(teacherId, dto);
-    }
+  @Patch(':teacherId/feature')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Feature / Unfeature teacher' })
+  feature(
+    @Param('teacherId') teacherId: string,
+    @Body() dto: FeatureTeacherDto,
+  ) {
+    return this.featureTeacherService.feature(teacherId, dto);
+  }
 
-    /* STATUS */
+  /* STATUS */
 
-    @Patch(':teacherId/status')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Change teacher status' })
-    changeStatus(
-        @Param('teacherId') teacherId: string,
-        @Body() dto: ChangeStatusDto,
-    ) {
-        return this.changeStatusService.changeStatus(teacherId, dto);
-    }
+  @Patch(':teacherId/status')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Change teacher status' })
+  changeStatus(
+    @Param('teacherId') teacherId: string,
+    @Body() dto: ChangeStatusDto,
+  ) {
+    return this.changeStatusService.changeStatus(teacherId, dto);
+  }
 }
 
 /* ─────────────────────────────
@@ -111,27 +107,27 @@ export class AdminTeacherController {
 @ApiTags('Public Teachers')
 @Controller('public/teachers')
 export class PublicTeacherController {
-    constructor(
-        private readonly getTeachersService: GetTeachersService,
-        private readonly getTeacherDetailsService: GetTeacherDetailsService,
-    ) {}
+  constructor(
+    private readonly getTeachersService: GetTeachersService,
+    private readonly getTeacherDetailsService: GetTeacherDetailsService,
+  ) {}
 
-    @Get()
-    @ApiOperation({
-        summary: 'Get all active teachers',
-    })
-    findAll(@Query() query: GetTeachersDto) {
-        return this.getTeachersService.findAll({
-            ...query,
-            isActive: true,
-        });
-    }
+  @Get()
+  @ApiOperation({
+    summary: 'Get all active teachers',
+  })
+  findAll(@Query() query: GetTeachersDto) {
+    return this.getTeachersService.findAll({
+      ...query,
+      isActive: true,
+    });
+  }
 
-    @Get(':slug')
-    @ApiOperation({
-        summary: 'Get teacher details by slug',
-    })
-    findOne(@Param('slug') slug: string) {
-        return this.getTeacherDetailsService.findBySlug(slug);
-    }
+  @Get(':slug')
+  @ApiOperation({
+    summary: 'Get teacher details by slug',
+  })
+  findOne(@Param('slug') slug: string) {
+    return this.getTeacherDetailsService.findBySlug(slug);
+  }
 }

@@ -1,10 +1,10 @@
 // dto/student-course-details-response.dto.ts
 
-import { EnrollmentStatus } from "../../../database/schemas/enrollment.schema";
+import { EnrollmentStatus } from '../../../database/schemas/enrollment.schema';
 import {
   PaymentMethod,
   PaymentStatus,
-} from "../../../database/schemas/payment.schema";
+} from '../../../database/schemas/payment.schema';
 
 export class StudentCourseClassDto {
   title!: string;

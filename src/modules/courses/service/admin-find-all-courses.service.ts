@@ -1,20 +1,20 @@
 // service/admin-find-all-courses.service.ts
 
-import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
-import { Course } from "../../../database/schemas/course.schema";
+import { Course } from '../../../database/schemas/course.schema';
 import {
   Enrollment,
   EnrollmentStatus,
-} from "../../../database/schemas/enrollment.schema";
+} from '../../../database/schemas/enrollment.schema';
 import {
   Payment,
   PaymentStatus,
-} from "../../../database/schemas/payment.schema";
+} from '../../../database/schemas/payment.schema';
 
-import { AdminFindAllCoursesResponseDto } from "../dto/admin-find-all-courses-response.dto";
+import { AdminFindAllCoursesResponseDto } from '../dto/admin-find-all-courses-response.dto';
 
 @Injectable()
 export class AdminFindAllCoursesService {

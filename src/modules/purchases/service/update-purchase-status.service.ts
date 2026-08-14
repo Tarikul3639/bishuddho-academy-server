@@ -1,21 +1,23 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-} from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 
-import { Enrollment, EnrollmentStatus } from "../../../database/schemas/enrollment.schema";
-import { Payment, PaymentStatus } from "../../../database/schemas/payment.schema";
-import { User } from "../../../database/schemas/user.schema";
-import { Course } from "../../../database/schemas/course.schema";
-import { UpdatePurchaseStatusDto } from "../dto/update-purchase-status.dto";
-import { EmailService } from "../../../common/email/services/email.service";
-import { EmailSubjects } from "../../../common/email/constants/email-subjects";
-import { paymentApprovedTemplate } from "../../../common/email/templates/payment-approved.template";
-import { paymentRejectedTemplate } from "../../../common/email/templates/payment-rejected.template";
+import {
+  Enrollment,
+  EnrollmentStatus,
+} from '../../../database/schemas/enrollment.schema';
+import {
+  Payment,
+  PaymentStatus,
+} from '../../../database/schemas/payment.schema';
+import { User } from '../../../database/schemas/user.schema';
+import { Course } from '../../../database/schemas/course.schema';
+import { UpdatePurchaseStatusDto } from '../dto/update-purchase-status.dto';
+import { EmailService } from '../../../common/email/services/email.service';
+import { EmailSubjects } from '../../../common/email/constants/email-subjects';
+import { paymentApprovedTemplate } from '../../../common/email/templates/payment-approved.template';
+import { paymentRejectedTemplate } from '../../../common/email/templates/payment-rejected.template';
 
 @Injectable()
 export class UpdatePurchaseStatusService {
@@ -44,22 +46,24 @@ export class UpdatePurchaseStatusService {
   }> {
     const payment = await this.paymentModel.findById(paymentId);
     if (!payment) {
-      throw new NotFoundException("Payment not found.");
+      throw new NotFoundException('Payment not found.');
     }
 
-    const enrollment = await this.enrollmentModel.findById(payment.enrollmentId);
+    const enrollment = await this.enrollmentModel.findById(
+      payment.enrollmentId,
+    );
     if (!enrollment) {
-      throw new NotFoundException("Enrollment not found.");
+      throw new NotFoundException('Enrollment not found.');
     }
 
     const user = await this.userModel.findById(enrollment.userId);
     if (!user) {
-      throw new NotFoundException("User not found.");
+      throw new NotFoundException('User not found.');
     }
 
     const course = await this.courseModel.findById(enrollment.courseId);
     if (!course) {
-      throw new NotFoundException("Course not found.");
+      throw new NotFoundException('Course not found.');
     }
 
     payment.status = dto.status;
@@ -81,7 +85,7 @@ export class UpdatePurchaseStatusService {
 
     await Promise.all([payment.save(), enrollment.save()]);
 
-    const frontendUrl = this.configService.get<string>("FRONTEND_URL") ?? "";
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') ?? '';
 
     try {
       if (dto.status === PaymentStatus.VERIFIED) {
@@ -104,7 +108,7 @@ export class UpdatePurchaseStatusService {
           name: user.name,
           courseTitle: course.title,
           amount: payment.amount,
-          reason: dto.rejectionReason ?? "No reason provided.",
+          reason: dto.rejectionReason ?? 'No reason provided.',
           paymentUrl: `${frontendUrl}/courses/${course._id}`,
         });
 
@@ -116,7 +120,7 @@ export class UpdatePurchaseStatusService {
       }
     } catch (error) {
       this.logger.error(
-        "Failed to send payment status email.",
+        'Failed to send payment status email.',
         error instanceof Error ? error.stack : undefined,
       );
     }

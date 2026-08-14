@@ -13,7 +13,7 @@ import { PurchasesModule } from './modules/purchases/purchases.module';
 import { AdminUsersModule } from './modules/admin-users/admin-users.module';
 import { TeacherModule } from './modules/teacher/teacher.module';
 import { BlockedUserGuard } from './modules/profile/guards/blocked-user.guard';
-import { CertificateModule } from "./modules/certificate/certificate.module";
+import { CertificateModule } from './modules/certificate/certificate.module';
 
 // _-_-_-_ Auth _-_-_-
 import { AuthModule } from './modules/auth/auth.module';
@@ -31,15 +31,13 @@ import { User, UserSchema } from './database/schemas/user.schema';
       validationSchema: envValidationSchema,
     }),
 
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-    ]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
 
     ThrottlerModule.forRoot({
       throttlers: [
         {
           ttl: 60000, // 60 sec
-          limit: 20,  // max 20 requests
+          limit: 20, // max 20 requests
         },
       ],
     }),
@@ -54,7 +52,7 @@ import { User, UserSchema } from './database/schemas/user.schema';
     TeacherModule,
     AdminDashboardModule,
     CertificateModule,
-    
+
     SeedModule,
   ],
 
@@ -73,4 +71,4 @@ import { User, UserSchema } from './database/schemas/user.schema';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

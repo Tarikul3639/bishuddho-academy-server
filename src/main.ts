@@ -2,14 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { VersioningType, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { NestExpressApplication } from "@nestjs/platform-express";
+import { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
-import { join } from "path";
+import { join } from 'path';
 
 async function bootstrap() {
-
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.useStaticAssets(join(process.cwd(), 'public'));
@@ -25,41 +24,37 @@ async function bootstrap() {
           /* images */
           imgSrc: [
             "'self'",
-            "data:",
-            "https://res.cloudinary.com", // ✅ cloudinary
+            'data:',
+            'https://res.cloudinary.com', // ✅ cloudinary
           ],
 
           /* scripts */
           scriptSrc: [
             "'self'",
             "'unsafe-inline'", // ⚠️ needed for dev / Next.js
-            "https:",
+            'https:',
           ],
 
           /* styles */
-          styleSrc: [
-            "'self'",
-            "'unsafe-inline'",
-            "https:",
-          ],
+          styleSrc: ["'self'", "'unsafe-inline'", 'https:'],
 
           /* API calls */
           connectSrc: [
             "'self'",
-            "http://localhost:3000", // frontend
-            "https://deenseries.vercel.app", // frontend (production)
-            "http://localhost:4000", // backend (if different port)
+            'http://localhost:3000', // frontend
+            'https://deenseries.vercel.app', // frontend (production)
+            'http://localhost:4000', // backend (if different port)
           ],
 
           /* iframe (YouTube etc) */
           frameSrc: [
             "'self'",
-            "https://www.youtube.com",
-            "https://player.vimeo.com",
+            'https://www.youtube.com',
+            'https://player.vimeo.com',
           ],
         },
       },
-    })
+    }),
   );
 
   // Cookie parser middleware
@@ -86,11 +81,13 @@ async function bootstrap() {
   });
 
   // Global Validation Pipe
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true, // Strip unknown properties
-    forbidNonWhitelisted: true, // Throw error on unknown properties
-    transform: true, // Automatically transform payloads to DTO instances
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // Strip unknown properties
+      forbidNonWhitelisted: true, // Throw error on unknown properties
+      transform: true, // Automatically transform payloads to DTO instances
+    }),
+  );
 
   // Swagger API Documentation (only in development)
   const config = new DocumentBuilder()

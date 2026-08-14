@@ -1,4 +1,4 @@
-import { baseTemplate } from "./base-email.template";
+import { baseTemplate } from './base-email.template';
 
 interface ForgotPasswordTemplateOptions {
   name: string;
@@ -10,8 +10,8 @@ export function forgotPasswordTemplate({
   resetUrl,
 }: ForgotPasswordTemplateOptions): string {
   return baseTemplate({
-    title: "Reset Your Password",
-    heading: "Reset your password",
+    title: 'Reset Your Password',
+    heading: 'Reset your password',
     content: `
       <p>Hello <strong>${name}</strong>,</p>
 
@@ -25,7 +25,7 @@ export function forgotPasswordTemplate({
         If you didn't request this, you can safely ignore this email.
       </p>
     `,
-    buttonText: "Reset Password",
+    buttonText: 'Reset Password',
     buttonUrl: resetUrl,
   });
 }

@@ -1,50 +1,50 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CertificateDto {
-    @ApiProperty()
-    certificateId!: string;
+  @ApiProperty()
+  certificateId!: string;
 
-    @ApiProperty()
-    enrollmentId!: string;
+  @ApiProperty()
+  enrollmentId!: string;
 
-    @ApiProperty()
-    studentId!: string;
+  @ApiProperty()
+  studentId!: string;
 
-    @ApiProperty()
-    studentName!: string;
+  @ApiProperty()
+  studentName!: string;
 
-    @ApiProperty()
-    studentEmail!: string;
+  @ApiProperty()
+  studentEmail!: string;
 
-    @ApiProperty()
-    courseId!: string;
+  @ApiProperty()
+  courseId!: string;
 
-    @ApiProperty()
-    courseTitle!: string;
+  @ApiProperty()
+  courseTitle!: string;
 
-    @ApiProperty()
-    certificateNo!: string;
+  @ApiProperty()
+  certificateNo!: string;
 
-    @ApiProperty()
-    pdfUrl!: string;
+  @ApiProperty()
+  pdfUrl!: string;
 
-    @ApiProperty()
-    uploadedBy!: string;
+  @ApiProperty()
+  uploadedBy!: string;
 
-    @ApiProperty()
-    issuedAt!: Date;
+  @ApiProperty()
+  issuedAt!: Date;
 }
 
 export class CertificateResponseDto {
-    @ApiProperty({
-        type: CertificateDto,
-    })
-    certificate!: CertificateDto;
+  @ApiProperty({
+    type: CertificateDto,
+  })
+  certificate!: CertificateDto;
 }
 
 export class CertificateListResponseDto {
-    @ApiProperty({
-        type: [CertificateDto],
-    })
-    certificates!: CertificateDto[];
+  @ApiProperty({
+    type: [CertificateDto],
+  })
+  certificates!: CertificateDto[];
 }

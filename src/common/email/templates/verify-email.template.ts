@@ -1,21 +1,21 @@
-import { baseTemplate } from "./base-email.template";
+import { baseTemplate } from './base-email.template';
 
 interface VerifyEmailTemplateOptions {
-    name: string;
+  name: string;
 
-    verificationUrl: string;
+  verificationUrl: string;
 }
 
 export function verifyEmailTemplate({
-    name,
-    verificationUrl,
+  name,
+  verificationUrl,
 }: VerifyEmailTemplateOptions): string {
-    return baseTemplate({
-        title: "Verify Your Email",
+  return baseTemplate({
+    title: 'Verify Your Email',
 
-        heading: `Welcome, ${name}`,
+    heading: `Welcome, ${name}`,
 
-        content: `
+    content: `
 <p>
 Thank you for creating your <strong>Bishuddho Academy</strong> account.
 </p>
@@ -30,8 +30,8 @@ If you did not create this account, you can safely ignore this email.
 </p>
 `,
 
-        buttonText: "Verify Email",
+    buttonText: 'Verify Email',
 
-        buttonUrl: verificationUrl,
-    });
+    buttonUrl: verificationUrl,
+  });
 }

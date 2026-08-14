@@ -2,26 +2,25 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 
-import { CloudinaryService, CloudinaryUploadResult } from "../../../common/cloudinary/cloudinary.service";
+import {
+  CloudinaryService,
+  CloudinaryUploadResult,
+} from '../../../common/cloudinary/cloudinary.service';
 
-import { Certificate } from "../../../database/schemas/certificate.schema";
+import { Certificate } from '../../../database/schemas/certificate.schema';
 import {
   Enrollment,
   EnrollmentStatus,
-} from "../../../database/schemas/enrollment.schema";
-import {
-  Course,
-  CourseStatus,
-} from "../../../database/schemas/course.schema";
-import { User } from "../../../database/schemas/user.schema";
+} from '../../../database/schemas/enrollment.schema';
+import { Course, CourseStatus } from '../../../database/schemas/course.schema';
+import { User } from '../../../database/schemas/user.schema';
 
-import { UploadCertificateDto } from "../dto/upload-certificate.dto";
-import { CertificateDto } from "../dto/certificate.dto";
-
+import { UploadCertificateDto } from '../dto/upload-certificate.dto';
+import { CertificateDto } from '../dto/certificate.dto';
 
 @Injectable()
 export class UploadCertificateService {
@@ -39,7 +38,7 @@ export class UploadCertificateService {
     private readonly userModel: Model<User>,
 
     private readonly cloudinaryService: CloudinaryService,
-  ) { }
+  ) {}
 
   async execute(
     dto: UploadCertificateDto,
@@ -47,18 +46,18 @@ export class UploadCertificateService {
     adminId: string,
   ): Promise<CertificateDto> {
     if (!file) {
-      throw new BadRequestException("Certificate PDF is required.");
+      throw new BadRequestException('Certificate PDF is required.');
     }
 
     const enrollment = await this.enrollmentModel.findById(dto.enrollmentId);
 
     if (!enrollment) {
-      throw new NotFoundException("Enrollment not found.");
+      throw new NotFoundException('Enrollment not found.');
     }
 
     if (enrollment.status !== EnrollmentStatus.ACTIVE) {
       throw new BadRequestException(
-        "Only active enrollments can receive certificates.",
+        'Only active enrollments can receive certificates.',
       );
     }
 
@@ -68,16 +67,16 @@ export class UploadCertificateService {
     ]);
 
     if (!course) {
-      throw new NotFoundException("Course not found.");
+      throw new NotFoundException('Course not found.');
     }
 
     if (!student) {
-      throw new NotFoundException("Student not found.");
+      throw new NotFoundException('Student not found.');
     }
 
     if (course.status !== CourseStatus.COMPLETED) {
       throw new BadRequestException(
-        "Course must be completed before uploading certificates.",
+        'Course must be completed before uploading certificates.',
       );
     }
 
@@ -90,15 +89,15 @@ export class UploadCertificateService {
     if (certificate) {
       uploadResult = await this.cloudinaryService.replaceFile(
         file,
-        "bishuddho-academy/certificates",
+        'bishuddho-academy/certificates',
         certificate.cloudinaryPublicId,
-        "raw",
+        'raw',
       );
     } else {
       uploadResult = await this.cloudinaryService.uploadFile(
         file,
-        "bishuddho-academy/certificates",
-        "raw",
+        'bishuddho-academy/certificates',
+        'raw',
       );
     }
 

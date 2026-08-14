@@ -1,261 +1,206 @@
-import {
-    Injectable,
-    NotFoundException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { InjectModel } from "@nestjs/mongoose";
+import { InjectModel } from '@nestjs/mongoose';
 
-import {
-    Model,
-    Types,
-} from "mongoose";
+import { Model, Types } from 'mongoose';
+
+import { Course } from '../../../database/schemas/course.schema';
 
 import {
-    Course,
-} from "../../../database/schemas/course.schema";
+  Enrollment,
+  EnrollmentStatus,
+} from '../../../database/schemas/enrollment.schema';
+
+import { Payment } from '../../../database/schemas/payment.schema';
 
 import {
-    Enrollment,
-    EnrollmentStatus,
-} from "../../../database/schemas/enrollment.schema";
-
-import {
-    Payment,
-} from "../../../database/schemas/payment.schema";
-
-import {
-    PublicCourseDetailsResponseDto,
-    CourseModuleDto,
-    PublicCoursePaymentDto,
-} from "../dto/public-course-details-response.dto";
+  PublicCourseDetailsResponseDto,
+  CourseModuleDto,
+  PublicCoursePaymentDto,
+} from '../dto/public-course-details-response.dto';
 
 @Injectable()
 export class PublicFindCourseDetailsService {
-    constructor(
-        @InjectModel(Course.name)
-        private readonly courseModel: Model<Course>,
+  constructor(
+    @InjectModel(Course.name)
+    private readonly courseModel: Model<Course>,
 
-        @InjectModel(Enrollment.name)
-        private readonly enrollmentModel: Model<Enrollment>,
+    @InjectModel(Enrollment.name)
+    private readonly enrollmentModel: Model<Enrollment>,
 
-        @InjectModel(Payment.name)
-        private readonly paymentModel: Model<Payment>,
-    ) {}
+    @InjectModel(Payment.name)
+    private readonly paymentModel: Model<Payment>,
+  ) {}
 
-    async findById(
-        courseId: string,
-        userId?: string,
-    ): Promise<PublicCourseDetailsResponseDto> {
+  async findById(
+    courseId: string,
+    userId?: string,
+  ): Promise<PublicCourseDetailsResponseDto> {
+    const course = await this.courseModel.findById(courseId).lean().exec();
 
-        const course = await this.courseModel
-            .findById(courseId)
-            .lean()
-            .exec();
+    if (!course) {
+      throw new NotFoundException('Course not found');
+    }
 
-        if (!course) {
-            throw new NotFoundException(
-                "Course not found",
-            );
-        }
-
-        /* -----------------------------
+    /* -----------------------------
            BOOKED SEATS
         ------------------------------ */
 
-        const bookedSeats =
-            await this.enrollmentModel.countDocuments({
-                courseId: course._id,
-                status: EnrollmentStatus.ACTIVE,
-            });
+    const bookedSeats = await this.enrollmentModel.countDocuments({
+      courseId: course._id,
+      status: EnrollmentStatus.ACTIVE,
+    });
 
-        /* -----------------------------
+    /* -----------------------------
            LESSON COUNT
         ------------------------------ */
 
-        const lessons =
-            course.modules?.reduce(
-                (total, module) =>
-                    total +
-                    (module.classes?.length ?? 0),
-                0,
-            ) ?? 0;
+    const lessons =
+      course.modules?.reduce(
+        (total, module) => total + (module.classes?.length ?? 0),
+        0,
+      ) ?? 0;
 
-        /* -----------------------------
+    /* -----------------------------
            DISCOUNT
         ------------------------------ */
 
-        const discount =
-            course.originalPrice > 0
-                ? Math.round(
-                      ((course.originalPrice -
-                          course.price) /
-                          course.originalPrice) *
-                          100,
-                  )
-                : 0;
+    const discount =
+      course.originalPrice > 0
+        ? Math.round(
+            ((course.originalPrice - course.price) / course.originalPrice) *
+              100,
+          )
+        : 0;
 
-        /* -----------------------------
+    /* -----------------------------
            DAYS LEFT
         ------------------------------ */
 
-        const daysLeft = Math.max(
-            0,
-            Math.ceil(
-                (new Date(
-                    course.startDate,
-                ).getTime() -
-                    Date.now()) /
-                    (1000 * 60 * 60 * 24),
-            ),
-        );
+    const daysLeft = Math.max(
+      0,
+      Math.ceil(
+        (new Date(course.startDate).getTime() - Date.now()) /
+          (1000 * 60 * 60 * 24),
+      ),
+    );
 
-        /* -----------------------------
+    /* -----------------------------
            USER ENROLLMENT
         ------------------------------ */
 
-        let isEnrolled = false;
+    let isEnrolled = false;
 
-        let enrollmentStatus:
-            | EnrollmentStatus
-            | undefined;
+    let enrollmentStatus: EnrollmentStatus | undefined;
 
-        let payment:
-            | PublicCoursePaymentDto
-            | undefined;
+    let payment: PublicCoursePaymentDto | undefined;
 
-        if (userId) {
-            const enrollment =
-                await this.enrollmentModel
-                    .findOne({
-                        courseId: course._id,
-                        userId: new Types.ObjectId(
-                            userId,
-                        ),
-                    })
-                    .lean()
-                    .exec();
+    if (userId) {
+      const enrollment = await this.enrollmentModel
+        .findOne({
+          courseId: course._id,
+          userId: new Types.ObjectId(userId),
+        })
+        .lean()
+        .exec();
 
-            if (enrollment) {
-                isEnrolled = true;
+      if (enrollment) {
+        isEnrolled = true;
 
-                enrollmentStatus =
-                    enrollment.status;
+        enrollmentStatus = enrollment.status;
 
-                const paymentDoc =
-                    await this.paymentModel
-                        .findOne({
-                            enrollmentId:
-                                enrollment._id,
-                        })
-                        .lean()
-                        .exec();
+        const paymentDoc = await this.paymentModel
+          .findOne({
+            enrollmentId: enrollment._id,
+          })
+          .lean()
+          .exec();
 
-                if (paymentDoc) {
-                    payment = {
-                        method:
-                            paymentDoc.method,
+        if (paymentDoc) {
+          payment = {
+            method: paymentDoc.method,
 
-                        trxId:
-                            paymentDoc.trxId,
+            trxId: paymentDoc.trxId,
 
-                        amount:
-                            paymentDoc.amount,
+            amount: paymentDoc.amount,
 
-                        paidAt:
-                            new Date(
-                                paymentDoc.paidAt,
-                            ).toISOString(),
+            paidAt: new Date(paymentDoc.paidAt).toISOString(),
 
-                        status:
-                            paymentDoc.status,
+            status: paymentDoc.status,
 
-                        verifiedBy:
-                            paymentDoc.verifiedBy?.toString(),
+            verifiedBy: paymentDoc.verifiedBy?.toString(),
 
-                        verifiedAt:
-                            paymentDoc.verifiedAt
-                                ? new Date(
-                                      paymentDoc.verifiedAt,
-                                  ).toISOString()
-                                : undefined,
+            verifiedAt: paymentDoc.verifiedAt
+              ? new Date(paymentDoc.verifiedAt).toISOString()
+              : undefined,
 
-                        rejectionReason:
-                            paymentDoc.rejectionReason,
-                    };
-                }
-            }
+            rejectionReason: paymentDoc.rejectionReason,
+          };
         }
+      }
+    }
 
-        /* -----------------------------
+    /* -----------------------------
            MODULES
         ------------------------------ */
 
-        const modules: CourseModuleDto[] =
-            course.modules?.map(
-                (module) => ({
-                    title: module.title,
+    const modules: CourseModuleDto[] =
+      course.modules?.map((module) => ({
+        title: module.title,
 
-                    classes:
-                        module.classes?.map(
-                            (cls) => ({
-                                title:
-                                    cls.title,
+        classes:
+          module.classes?.map((cls) => ({
+            title: cls.title,
 
-                                session:
-                                    cls.session,
-                            }),
-                        ) ?? [],
-                }),
-            ) ?? [];        /* -----------------------------
+            session: cls.session,
+          })) ?? [],
+      })) ?? []; /* -----------------------------
            RESPONSE
         ------------------------------ */
 
-        return {
-            courseId: course._id.toString(),
+    return {
+      courseId: course._id.toString(),
 
-            title: course.title,
-            tagline: course.tagline,
-            description: course.description,
+      title: course.title,
+      tagline: course.tagline,
+      description: course.description,
 
-            thumbnailUrl: course.thumbnailUrl,
+      thumbnailUrl: course.thumbnailUrl,
 
-            instructor: course.instructor,
+      instructor: course.instructor,
 
-            averageRating: course.averageRating,
-            reviewCount: course.reviewCount,
+      averageRating: course.averageRating,
+      reviewCount: course.reviewCount,
 
-            students: bookedSeats,
+      students: bookedSeats,
 
-            price: course.price,
-            originalPrice: course.originalPrice,
+      price: course.price,
+      originalPrice: course.originalPrice,
 
-            discount,
-            daysLeft,
+      discount,
+      daysLeft,
 
-            duration: course.duration,
+      duration: course.duration,
 
-            lessons,
+      lessons,
 
-            totalSeats: course.totalSeats,
-            bookedSeats,
+      totalSeats: course.totalSeats,
+      bookedSeats,
 
-            schedule: course.schedule,
-            location: course.location,
+      schedule: course.schedule,
+      location: course.location,
 
-            startDate: new Date(
-                course.startDate,
-            ).toISOString(),
+      startDate: new Date(course.startDate).toISOString(),
 
-            isEnrolled,
+      isEnrolled,
 
-            enrollmentStatus,
+      enrollmentStatus,
 
-            payment,
+      payment,
 
-            includes:
-                course.includes ?? [],
+      includes: course.includes ?? [],
 
-            modules,
-        };
-    }
+      modules,
+    };
+  }
 }
